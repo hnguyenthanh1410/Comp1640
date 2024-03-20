@@ -1,5 +1,0 @@
-{
-	"scripts": {
-		"install": "cd store && install.sh"
-	}
-}
