@@ -29,6 +29,8 @@ module.exports = {
 		semi: ['error', 'always'],
 		'no-empty': ['warn'],
 		'no-lonely-if': ['off'],
-		'arrow-parens': ['off']
+		'arrow-parens': ['off'],
+		'curly': ['error', 'multi-line'],
+		'no-unused-expressions': ['off']
 	}
 };
