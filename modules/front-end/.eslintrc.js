@@ -31,6 +31,8 @@ module.exports = {
 		'no-lonely-if': ['off'],
 		'arrow-parens': ['off'],
 		'curly': ['error', 'multi-line'],
-		'no-unused-expressions': ['off']
+		'no-unused-expressions': ['off'],
+		'quotes': ['off'],
+		'no-useless-escape': ['off']
 	}
 };

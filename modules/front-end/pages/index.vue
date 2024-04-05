@@ -1,83 +1,51 @@
 <template>
-	<v-layout
-		v-scroll="throttleOnScroll"
-		class="pa-0"
-		column
-	>
-		<v-card
-			class="white d-flex justify-end rounded-0"
-			height="21.5vh"
-			width="100%"
-		>
-			<v-spacer />
-
-			<v-text-field
-				ref="searchBox"
-				append-icon="mdi-magnify"
-				placeholder="Search"
-				class="rounded-0 mr-4 align-self-center search"
-				outlined
-				solo
-				light
-				hide-details
-				style="max-width: 16%"
+	<v-layout class="pa-0 justify-center align-center h-100">
+		<v-card color="white" width="50vh" height="55vh" class="d-flex flex-column align-center">
+			<div class="black--text">Please choose your method of login</div>
+			<v-img
+				:src="require('~/assets/img/logo.png')"
+				width="100%"
+				contain
+				max-height="75%"
 			/>
+			<v-btn
+				v-for="(header, key) of headers"
+				:key="key"
+				:ripple="false"
+				:to="header.link"
+				plain
+				text
+				color="#ffffff"
+				width="60%"
+				class="black my-2 rounded-lg"
+			>
+				{{ header.text }}
+			</v-btn>
 		</v-card>
-
-		<v-card color="#2b3494" height="4vh" width="100%" />
-		<v-card class="grey rounded-0" height="7vh" width="100%" />
-
-		<v-card
-			ref="banner"
-			class="white rounded-0"
-			height="100vh"
-			width="100%"
-		/>
 	</v-layout>
 </template>
 
 <script>
-import _ from 'lodash';
 export default {
 	name: 'IndexPage',
 	auth: 'guest',
 	data () {
 		return {
-			lastPosition: 0
+			headers: [
+				{
+					text: "Sign in with email",
+					link: "/login"
+				},
+				{
+					text: "Guest",
+					link: "/guest"
+				},
+				{
+					text: "Register",
+					link: "/register"
+				}
+			]
 		};
-	},
-	methods: {
-		throttleOnScroll (e) {
-			_.throttle(this.onScroll(e), 1000);
-		},
-		onScroll (e) {
-			const scrollPosition = e.target.documentElement.scrollTop;
-			if (scrollPosition > this.lastPosition) {
-				if (scrollPosition <= this.$refs.searchBox.$el.offsetTop || this.lastPosition === 0) {
-					e.target.documentElement.scrollTop = this.$refs.searchBox.$el.offsetTop;
-				} else if (scrollPosition > this.$refs.searchBox.$el.offsetTop - 42 && scrollPosition <= this.$refs.banner.$el.offsetTop) {
-					e.target.documentElement.scrollTop = this.$refs.banner.$el.offsetTop;
-				} else {
-					return;
-				}
-			} else {
-				if (scrollPosition >= this.$refs.searchBox.$el.offsetTop && scrollPosition <= this.$refs.banner.$el.offsetTop) {
-					e.target.documentElement.scrollTop = this.$refs.searchBox.$el.offsetTop;
-				} else if (scrollPosition < this.$refs.searchBox.$el.offsetTop) {
-					e.target.documentElement.scrollTop = 0;
-				} else {
-					e.target.documentElement.scrollTop = this.$refs.banner.$el.offsetTop;
-				}
-			}
-
-			this.lastPosition = scrollPosition;
-		}
 	}
 };
 </script>
-
-<style>
-.search * {
-	min-height: 0% !important;
-}
-</style>
