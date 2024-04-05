@@ -9,8 +9,6 @@
 			text
 			class="transparent text-capitalize"
 			plain
-			style="
-			"
 		>
 			{{ header.text }}
 		</v-btn>

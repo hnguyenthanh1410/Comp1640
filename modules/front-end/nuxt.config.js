@@ -69,9 +69,9 @@ export default {
 			local: {
 				schema: 'oauth2',
 				endpoints: {
-					authorization: 'http://localhost:5000/login',
+					authorization: 'http://localhost:8080/login',
 					token: false,
-					logout: 'http://localhost:5000/logout'
+					logout: 'http://localhost:8080/logout'
 				},
 				token: {
 					property: 'access_token',
@@ -114,10 +114,5 @@ export default {
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build
 	build: {
-	},
-
-	// Server Configuration
-	// server: {
-	// 	port: "5000"
-	// }
+	}
 };

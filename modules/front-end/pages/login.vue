@@ -1,16 +1,16 @@
 <template>
 	<v-layout class="pa-0 justify-center align-center h-100">
-		<v-card color="white" width="70vh" height="50vh" class="d-flex flex-column align-center">
-			<div class="black--text text-h4 mt-6 font-weight-bold">Sign In</div>
+		<v-card color="white" width="70vh" height="40vh" class="d-flex flex-column align-center">
+			<div class="black--text text-h4 mt-6 mb-4 font-weight-bold">Sign In</div>
 			<v-form
 				v-model="valid"
 				class="d-flex flex-column align-center"
 				@submit.prevent="submit"
 			>
 				<v-card
-					class="d-flex pa-2"
+					class="d-flex pl-5"
 					color="transparent"
-					height="35vh"
+					height="25vh"
 					flat
 				>
 					<v-layout column>
@@ -32,7 +32,7 @@
 						max-height="75%"
 					/>
 				</v-card>
-				<v-layout>
+				<v-layout justify-center>
 					<v-btn
 						v-for="(btn, key) of btns"
 						:key="key"
@@ -43,7 +43,7 @@
 						plain
 						text
 						color="#ffffff"
-						width="30%"
+						width="50%"
 						class="black mx-2 rounded-lg"
 					>
 						{{ btn.text }}
@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
 	name: 'LoginPage',
 	auth: 'guest',
@@ -101,8 +102,18 @@ export default {
 		required (text) {
 			return !!text || "This field is required.";
 		},
-		submit () {
-			console.log("running");
+		async submit () {
+			try {
+				await axios({
+					url: 'http://localhost:8080/auth/sign-in',
+					method: "post",
+					data: {
+						...this.form
+					}
+				});
+			} catch (err) {
+				console.log(err);
+			}
 		}
 	}
 };
