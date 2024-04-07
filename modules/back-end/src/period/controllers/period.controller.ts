@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { PeriodService } from '../period.service';
-import { AuthGuardJwt } from 'src/auth/auth-guard.jwt';
+import { AuthGuardJwt } from 'src/auth/jwt.guard';
 import { Period } from '../entity/period.entity';
 import { CreatePeriodRequest } from '../dtos/create.period.dto';
 import { CheckRole } from 'src/role/role.decorator';

@@ -16,10 +16,11 @@ import {
   CreateUserRequest,
   GetUserResponse,
 } from 'src/user/dtos/create.user.dto';
-import { AuthGuardLocal } from '../auth-guard.local';
+import { AuthGuardLocal } from '../local.guard';
 import { EmailUserRequest } from 'src/user/dtos/email.user.dto';
 import { CodeRequest } from '../dtos/code.dto';
 import { PasswordUserRequest } from 'src/user/dtos/password.user.dto';
+import { RefreshJwtStrategy } from '../refreshToken.strategy';
 
 @Controller('auth')
 export class AuthController {
@@ -31,20 +32,8 @@ export class AuthController {
 
   @Post('sign-in')
   @UseGuards(AuthGuardLocal)
-  async login(@CurrentUser() user: User, @Body() signInRequest: SignInRequest) {
-    const userInfo: GetUserResponse = {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      faculty: user.faculty,
-      role: user.role,
-    };
-    return {
-      user: userInfo,
-      token: this.authService.getToken(user),
-    };
+  async login(@Body() signInRequest: SignInRequest) {
+    return this.authService.login(signInRequest);
   }
 
   @Post('create-user')
@@ -71,4 +60,10 @@ export class AuthController {
 
     return this.authService.resetPassword(hashPass);
   }
+
+  @UseGuards(RefreshJwtStrategy)
+  @Post('refresh-token')
+	async refreshToken(@Body() payload: SignInRequest) {
+		this.authService.refreshToken(payload)
+	}
 }

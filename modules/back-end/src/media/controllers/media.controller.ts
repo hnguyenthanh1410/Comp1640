@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { MediaService } from '../media.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { AuthGuardJwt } from 'src/auth/auth-guard.jwt';
+import { AuthGuardJwt } from 'src/auth/jwt.guard';
 
 @Controller('media')
 export class MediaController {

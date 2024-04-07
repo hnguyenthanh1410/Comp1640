@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ContributionService } from '../contribution.service';
-import { AuthGuardJwt } from 'src/auth/auth-guard.jwt';
+import { AuthGuardJwt } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/role/role.guard';
 import { CheckRole } from 'src/role/role.decorator';
 import { RoleName } from 'src/role/entity/role.entity';
