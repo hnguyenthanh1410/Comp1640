@@ -29,11 +29,34 @@ export class AuthService {
 		private readonly roleRepository: Repository<Role>,
 	) { }
 
-	public getToken(user: User): string {
-		return this.jwtService.sign({
-			username: user.username,
-			sub: user.id,
-		});
+	async getTokens(userId: string, username: string) {
+		const [accessToken, refreshToken] = await Promise.all([
+			this.jwtService.signAsync(
+				{
+					sub: userId,
+					username,
+				},
+				{
+					secret: process.env.JWT_ACCESS_SECRET,
+					expiresIn: '1h',
+				},
+			),
+			this.jwtService.signAsync(
+				{
+					sub: userId,
+					username,
+				},
+				{
+					secret: process.env.JWT_REFRESH_SECRET,
+					expiresIn: '3h',
+				},
+			),
+		]);
+
+		return {
+			accessToken,
+			refreshToken,
+		};
 	}
 
 	public async validateUser(username: string, password: string): Promise<User> {
@@ -90,16 +113,6 @@ export class AuthService {
 		user.role = studentRole;
 
 		const savedUser = await this.userRepository.save(user);
-		const access_token = this.getToken(user);
-		const refresh_token = this.jwtService.sign(
-			{
-				username: user.username,
-				sub: user.id
-			},
-			{
-				expiresIn: '3h'
-			}
-		)
 
 		return {
 			user: {
@@ -111,8 +124,7 @@ export class AuthService {
 				faculty: savedUser.faculty,
 				role: savedUser.role,
 			},
-			access_token,
-			refresh_token
+			...await this.getTokens(user.id, user.username)
 		};
 	}
 
@@ -123,21 +135,9 @@ export class AuthService {
 			]
 		})
 
-		const access_token = this.getToken(user);
-		const refresh_token = this.jwtService.sign(
-			{
-				username: user.username,
-				sub: user.id
-			},
-			{
-				expiresIn: '3h'
-			}
-		)
-
 		if (user && await bcrypt.compare(signInRequest.password, user.password)) {
 			return {
-				access_token,
-				refresh_token
+				...await this.getTokens(user.id, user.username)
 			}
 		} else if (user && await !bcrypt.compare(signInRequest.password, user.password)) {
 			throw new BadRequestException('Invaild email or password has been provided.')
@@ -153,20 +153,8 @@ export class AuthService {
 			]
 		})
 
-		const access_token = this.getToken(user);
-		const refresh_token = this.jwtService.sign(
-			{
-				username: user.username,
-				sub: user.id
-			},
-			{
-				expiresIn: '3h'
-			}
-		)
-
 		return {
-			access_token,
-			refresh_token
+			...await this.getTokens(user.id, user.username)
 		}
 	}
 
@@ -230,5 +218,11 @@ export class AuthService {
 			firstName: accountAfterResetPass.firstName,
 			lastName: accountAfterResetPass.lastName,
 		};
+	}
+
+	public async logout(userId: string) {
+		await this.userRepository.update(userId, {
+
+		})
 	}
 }

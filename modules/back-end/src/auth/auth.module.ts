@@ -16,14 +16,7 @@ import { FirebaseService } from 'src/firebase/firebase.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Faculty, Role]),
-    JwtModule.registerAsync({
-      useFactory: () => ({
-        secret: process.env.JWT_SECRET,
-        signOptions: {
-          expiresIn: '60m',
-        },
-      }),
-    }),
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
   providers: [
