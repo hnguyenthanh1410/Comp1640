@@ -69,9 +69,9 @@ export default {
 			local: {
 				schema: 'oauth2',
 				endpoints: {
-					authorization: 'http://localhost:8080/login',
+					authorization: 'http://localhost:8080/auth/sign-in',
 					token: false,
-					logout: 'http://localhost:8080/logout'
+					logout: 'http://localhost:8080/auth/logout'
 				},
 				token: {
 					property: 'access_token',
@@ -81,7 +81,7 @@ export default {
 				refreshToken: {
 					property: 'refresh_token',
 					type: 'Bearer',
-					maxAge: 60 * 60 * 2
+					maxAge: 60 * 60 * 3
 				},
 				responseType: 'token',
 				grantType: 'authorization_code'

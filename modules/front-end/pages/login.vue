@@ -1,7 +1,17 @@
 <template>
 	<v-layout class="pa-0 justify-center align-center h-100">
-		<v-card color="white" width="70vh" height="40vh" class="d-flex flex-column align-center">
-			<div class="black--text text-h4 mt-6 mb-4 font-weight-bold">Sign In</div>
+		<v-card
+			color="white"
+			width="70vh"
+			height="40vh"
+			class="d-flex flex-column align-center rounded-xl"
+		>
+			<div
+				class="black--text text-h4 mt-6 mb-4 font-weight-bold"
+			>
+				Sign In
+			</div>
+
 			<v-form
 				v-model="valid"
 				class="d-flex flex-column align-center"
@@ -25,6 +35,7 @@
 							outlined
 						/>
 					</v-layout>
+
 					<v-img
 						:src="require('~/assets/img/logo.png')"
 						width="45%"
@@ -32,6 +43,7 @@
 						max-height="75%"
 					/>
 				</v-card>
+				
 				<v-layout justify-center>
 					<v-btn
 						v-for="(btn, key) of btns"
