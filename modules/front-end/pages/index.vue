@@ -5,9 +5,12 @@
 			width="50vh"
 			height="55vh"
 			class="d-flex flex-column align-center"
+			:class="{
+				'index-card': $vuetify.breakpoint.mdAndDown
+			}"
 		>
 			<div
-				class="black--text text-h5 font-weight-regular"
+				class="black--text text-h5 font-weight-regular mt-3"
 				style="text-align: center;"
 			>
 				Please choose your method of login
@@ -17,9 +20,10 @@
 				:src="require('~/assets/img/logo.png')"
 				width="100%"
 				contain
-				max-height="60%"
+				max-height="55%"
+				class="mb-3"
 			/>
-			
+
 			<v-btn
 				v-for="(header, key) of headers"
 				:key="key"
@@ -61,3 +65,9 @@ export default {
 	}
 };
 </script>
+
+<style scoped>
+.index-card > * {
+	flex: 0 auto;
+}
+</style>

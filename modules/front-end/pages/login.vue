@@ -14,7 +14,7 @@
 
 			<v-form
 				v-model="valid"
-				class="d-flex flex-column align-center"
+				class="d-flex flex-column align-center w-100"
 				@submit.prevent="submit"
 			>
 				<v-card
