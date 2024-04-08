@@ -1,10 +1,8 @@
 <template>
 	<v-layout class="pa-0 justify-center align-center h-100">
-		<v-card
-			color="white"
-			width="70vh"
+		<index-card
+			width="35vw"
 			height="40vh"
-			class="d-flex flex-column align-center rounded-xl"
 		>
 			<div
 				class="black--text text-h4 mt-6 mb-4 font-weight-bold"
@@ -62,7 +60,7 @@
 					</v-btn>
 				</v-layout>
 			</v-form>
-		</v-card>
+		</index-card>
 	</v-layout>
 </template>
 

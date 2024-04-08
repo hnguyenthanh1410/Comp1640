@@ -1,11 +1,9 @@
 <template>
 	<v-layout class="pa-0 justify-center align-center h-100">
-		<v-card
-			color="white"
-			width="50vh"
+		<index-card
+			width="40vw"
 			height="55vh"
-			class="d-flex flex-column align-center"
-			:class="{
+			:index-class="{
 				'index-card': $vuetify.breakpoint.mdAndDown
 			}"
 		>
@@ -37,7 +35,7 @@
 			>
 				{{ header.text }}
 			</v-btn>
-		</v-card>
+		</index-card>
 	</v-layout>
 </template>
 
