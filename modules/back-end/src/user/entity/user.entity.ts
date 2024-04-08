@@ -1,3 +1,4 @@
+import { IsOptional, IsString } from 'class-validator';
 import { Comment } from 'src/comment/entity/comment.entity';
 import { Contribution } from 'src/contribution/entity/contribution.entity';
 import { Faculty } from 'src/faculty/entity/faculty.entity';
@@ -51,4 +52,7 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.author, { cascade: true })
   ownerComment: Comment[];
+
+  @Column({ type: 'longtext', nullable: true})
+  refreshToken?: string
 }

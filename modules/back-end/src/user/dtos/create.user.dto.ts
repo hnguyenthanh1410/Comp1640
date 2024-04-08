@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Faculty } from 'src/faculty/entity/faculty.entity';
 import { Role } from 'src/role/entity/role.entity';
 
@@ -55,4 +55,8 @@ export class GetUserResponse {
   phone?: string;
 
   address?: string;
+
+  @IsString()
+  @IsOptional()
+  refreshToken?: string
 }

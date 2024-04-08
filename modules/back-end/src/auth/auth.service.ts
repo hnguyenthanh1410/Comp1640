@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/user.entity';
@@ -70,7 +70,7 @@ export class AuthService {
 		return userInfo;
 	}
 
-	public async hashPassword(password: string): Promise<string> {
+	public async hashData(password: string): Promise<string> {
 		return await bcrypt.hash(password, 10);
 	}
 
@@ -86,7 +86,7 @@ export class AuthService {
 			throw new BadRequestException('Username or Email is existed !');
 
 		user.username = createUserRequest.username;
-		user.password = await this.hashPassword(createUserRequest.password);
+		user.password = await this.hashData(createUserRequest.password);
 		user.email = createUserRequest.email;
 		user.firstName = createUserRequest.firstName;
 		user.lastName = createUserRequest.lastName;
@@ -114,6 +114,9 @@ export class AuthService {
 
 		const savedUser = await this.userRepository.save(user);
 
+		const tokens = await this.getTokens(user.id, user.username);
+		this.updateRefreshToken(user.id, tokens.refreshToken);
+
 		return {
 			user: {
 				id: savedUser.id,
@@ -124,7 +127,7 @@ export class AuthService {
 				faculty: savedUser.faculty,
 				role: savedUser.role,
 			},
-			...await this.getTokens(user.id, user.username)
+			...tokens
 		};
 	}
 
@@ -136,9 +139,10 @@ export class AuthService {
 		})
 
 		if (user && await bcrypt.compare(signInRequest.password, user.password)) {
-			return {
-				...await this.getTokens(user.id, user.username)
-			}
+			const tokens = await this.getTokens(user.id, user.username);
+
+			this.updateRefreshToken(user.id, tokens.refreshToken)
+			return tokens;
 		} else if (user && await !bcrypt.compare(signInRequest.password, user.password)) {
 			throw new BadRequestException('Invaild email or password has been provided.')
 		} else {
@@ -146,16 +150,21 @@ export class AuthService {
 		}
 	}
 
-	public async refreshToken(signInRequest: SignInRequest) {
+	public async refreshToken(username, refreshToken) {
 		const user = await this.userRepository.findOne({
 			where: [
-				{ username: signInRequest.username }
+				{ username }
 			]
 		})
 
-		return {
-			...await this.getTokens(user.id, user.username)
-		}
+		const refreshTokenMatch = await bcrypt.compare(refreshToken, user.refreshToken);
+
+		if (!refreshTokenMatch) throw new ForbiddenException('Forbidden Access');
+
+		const tokens = await this.getTokens(user.id, user.username);
+
+		this.updateRefreshToken(user.id, tokens.refreshToken)
+		return tokens;
 	}
 
 	public async sendCodeResetPassword(email: string): Promise<object> {
@@ -222,7 +231,14 @@ export class AuthService {
 
 	public async logout(userId: string) {
 		await this.userRepository.update(userId, {
+			refreshToken: null
+		})
+	}
 
+	async updateRefreshToken (userId: string, refreshToken: string) {
+		const hashedRefreshToken = await this.hashData(refreshToken);
+		await this.userRepository.update(userId, {
+			refreshToken: hashedRefreshToken
 		})
 	}
 }

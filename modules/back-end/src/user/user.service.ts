@@ -62,6 +62,7 @@ export class UserService {
         lastName: user.lastName,
         faculty: user.faculty,
         role: user.role,
+		refreshToken: user.refreshToken
       };
     });
   }
@@ -80,6 +81,7 @@ export class UserService {
       phone: user.phone,
       address: user.address,
       avatar: user.avatar,
+	  refreshToken: user.refreshToken
     };
   }
 
@@ -109,6 +111,7 @@ export class UserService {
       phone: payload.phone,
       address: payload.address,
       ...(image && { avatar: payload.avatar }),
+	  refreshToken: payload.refreshToken
     });
   }
 }

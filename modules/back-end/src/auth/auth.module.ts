@@ -12,6 +12,7 @@ import { Role } from 'src/role/entity/role.entity';
 import { RoleService } from 'src/role/role.service';
 import { MediaService } from 'src/media/media.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import { RefreshJwtStrategy } from './refreshToken.strategy';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { FirebaseService } from 'src/firebase/firebase.service';
     RoleService,
     MediaService,
     FirebaseService,
+	RefreshJwtStrategy
   ],
 })
 export class AuthModule {}
