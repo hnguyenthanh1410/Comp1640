@@ -4,9 +4,7 @@
 			width="35vw"
 			height="40vh"
 		>
-			<div
-				class="black--text text-h4 mt-6 mb-4 font-weight-bold"
-			>
+			<div class="black--text text-h4 mt-6 mb-4 font-weight-bold">
 				Sign In
 			</div>
 
@@ -65,7 +63,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 export default {
 	name: 'LoginPage',
 	auth: 'guest',
@@ -84,11 +81,10 @@ export default {
 			],
 			headers: [
 				{
-					label: "Email",
-					value: 'email',
+					label: "Username",
+					value: 'username',
 					rules: [
-						this.required,
-						(text) => !!text.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) || "Invaild email format."
+						this.required
 					]
 				},
 				{
@@ -103,7 +99,7 @@ export default {
 			],
 			valid: false,
 			form: {
-				email: '',
+				username: '',
 				password: ''
 			}
 		};
@@ -114,13 +110,7 @@ export default {
 		},
 		async submit () {
 			try {
-				await axios({
-					url: 'http://localhost:8080/auth/sign-in',
-					method: "post",
-					data: {
-						...this.form
-					}
-				});
+				await this.$auth.login(this.form);
 			} catch (err) {
 				console.log(err);
 			}

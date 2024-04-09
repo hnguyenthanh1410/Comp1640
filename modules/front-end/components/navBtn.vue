@@ -1,16 +1,43 @@
 <template>
 	<v-layout>
 		<v-btn
-			v-for="(header, key) of headers"
-			:key="key"
-			:to="header.link"
+			color="black"
+			:ripple="false"
+			to="/"
+			text
+			class="transparent text-capitalize"
+			plain
+		>
+			Home
+		</v-btn>
+		
+		<v-spacer />
+
+		<div v-if="!$auth.loggedIn">
+			<v-btn
+				v-for="(header, key) of headers"
+				:key="key"
+				color="black"
+				:ripple="false"
+				:to="header.link"
+				text
+				class="transparent text-capitalize"
+				plain
+			>
+				{{ header.text }}
+			</v-btn>
+		</div>
+
+		<v-btn
+			v-else
 			color="black"
 			:ripple="false"
 			text
 			class="transparent text-capitalize"
 			plain
+			@click="logout"
 		>
-			{{ header.text }}
+			Log out
 		</v-btn>
 	</v-layout>
 </template>
@@ -22,10 +49,6 @@ export default {
 		return {
 			headers: [
 				{
-					text: "Home",
-					link: "/"
-				},
-				{
 					text: "Login",
 					link: "/login"
 				},
@@ -35,22 +58,11 @@ export default {
 				}
 			]
 		};
+	},
+	methods: {
+		async logout () {
+			await this.$auth.logout();
+		}
 	}
 };
 </script>
-
-<style scoped>
-a.v-btn:hover {
-	background-color: white;
-	font-weight: bold;
-	color: rgb(41, 41, 120);
-}
-
-span.v-btn__content {
-	text-decoration: none;
-	color: black;
-	border-right: 1px solid white;
-	padding: 10px;
-	font-size: 14px;
-}
-</style>

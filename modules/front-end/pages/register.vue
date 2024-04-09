@@ -4,9 +4,7 @@
 			height="78vh"
 			width="40vw"
 		>
-			<div
-				class="black--text text-h4 mt-6 font-weight-bold mb-3"
-			>
+			<div class="black--text text-h4 mt-6 font-weight-bold mb-3">
 				Sign In
 			</div>
 

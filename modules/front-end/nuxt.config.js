@@ -66,25 +66,27 @@ export default {
 			home: '/'
 		},
 		strategies: {
-			local: {
-				schema: 'oauth2',
+			customStrategy: {
+				scheme: '~/scheme/customScheme',
 				endpoints: {
 					authorization: 'http://localhost:8080/auth/sign-in',
 					token: false,
-					logout: 'http://localhost:8080/auth/logout'
+					logout: 'http://localhost:8080/auth/logout',
+					userInfo: 'http://localhost:8080/user/getUserInfo'
 				},
 				token: {
-					property: 'access_token',
+					property: 'accessToken',
 					type: 'Bearer',
 					maxAge: 1800
 				},
 				refreshToken: {
-					property: 'refresh_token',
+					property: 'refreshToken',
 					type: 'Bearer',
 					maxAge: 60 * 60 * 3
 				},
 				responseType: 'token',
-				grantType: 'authorization_code'
+				grantType: 'authorization_code',
+				autoLogout: true
 			}
 		}
 	},

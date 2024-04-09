@@ -1,7 +1,7 @@
 <template>
 	<v-layout class="pa-0 justify-center align-center h-100">
 		<index-card
-			width="40vw"
+			width="30vw"
 			height="55vh"
 			:index-class="{
 				'index-card': $vuetify.breakpoint.mdAndDown
@@ -31,7 +31,7 @@
 				text
 				color="#ffffff"
 				width="60%"
-				class="black my-2 rounded-lg"
+				class="black my-2 rounded-lg text-capitalize"
 			>
 				{{ header.text }}
 			</v-btn>
@@ -47,7 +47,7 @@ export default {
 		return {
 			headers: [
 				{
-					text: "Sign in with email",
+					text: "Sign in with username",
 					link: "/login"
 				},
 				{
