@@ -4,6 +4,7 @@ import {
 	Get,
 	Param,
 	Patch,
+	Req,
 	UploadedFile,
 	UseGuards,
 	UseInterceptors,
@@ -19,6 +20,7 @@ import { UpdateRoleRequest, UpdateUserRequest } from '../dtos/update.role.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../entity/user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -30,6 +32,12 @@ export class UserController {
 		return await this.userService.getAllUsers();
 	}
 
+	@Get('getUserInfo')
+	@UseGuards(AuthGuard('jwtGate'))
+	async getUserInfo(@Req() req: Request) {
+		return await this.userService.getUserInfo(req.user['username']);
+	}
+
 	@Get(':id')
 	@ApiParam({
 		name: 'id',
@@ -39,9 +47,11 @@ export class UserController {
 	}
 
 	@Patch('update-role/:id')
+	@UseGuards(AuthGuard('jwtGate'))
 	@ApiParam({
 		name: 'id',
 	})
+
 	@UseGuards(AuthGuard('jwtGate'), RoleGuard)
 	@CheckRole(RoleName.ADMIN)
 	async updateRole(
@@ -54,9 +64,11 @@ export class UserController {
 	}
 
 	@Patch('update-information/:id')
+	@UseGuards(AuthGuard('jwtGate'))
 	@ApiParam({
 		name: 'id',
 	})
+
 	@UseInterceptors(FileInterceptor('image'))
 	@UseGuards(AuthGuard('jwtGate'), RoleGuard)
 	@CheckRole(
@@ -65,6 +77,8 @@ export class UserController {
 		RoleName.MARKETING_COORDINATOR,
 		RoleName.MARKETING_MANAGER,
 	)
+
+	@UseGuards(AuthGuard('jwtGate'))
 	async updateInfo(
 		@Param('id') id: string,
 		@Body() payload: UpdateUserRequest,
