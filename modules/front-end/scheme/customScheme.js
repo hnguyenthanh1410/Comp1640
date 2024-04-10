@@ -36,4 +36,20 @@ export default class CustomSchema extends Oauth2Scheme {
 			console.log(err);
 		}
 	}
+
+	async refreshTokens () {
+		try {
+			const token = await axios({
+				method: 'post',
+				url: 'http://localhost:8080/auth/refresh-token',
+				headers: {
+					authorization: this.$auth.strategy.refreshToken.get()
+				}
+			});
+
+			this.$auth.setUserToken(token.data.accessToken, token.data.refreshToken);
+		} catch (err) {
+			console.log(err);
+		}
+	}
 };
