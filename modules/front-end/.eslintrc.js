@@ -33,6 +33,7 @@ module.exports = {
 		'curly': ['error', 'multi-line'],
 		'no-unused-expressions': ['off'],
 		'quotes': ['off'],
-		'no-useless-escape': ['off']
+		'no-useless-escape': ['off'],
+		'no-return-assign': ['off']
 	}
 };

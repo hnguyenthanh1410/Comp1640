@@ -14,4 +14,7 @@ export class Faculty {
 
   @OneToMany(() => User, (user) => user.faculty)
   facultyUser: User;
+
+  @Column({ unique: true })
+  slug: string;
 }

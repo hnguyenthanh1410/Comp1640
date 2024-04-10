@@ -1,11 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { FacultyService } from '../faculty.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('faculty')
 export class FacultyController {
   constructor(private readonly facultyService: FacultyService) {}
 
   @Get('get-all')
+  @UseGuards(AuthGuard('jwtGate'))
   async getListFaculty() {
     return await this.facultyService.getAllFaculties();
   }

@@ -25,7 +25,7 @@ export default class CustomSchema extends Oauth2Scheme {
 				method: 'Post',
 				url: 'http://localhost:8080/auth/logout',
 				headers: {
-					authorization: this.$auth.strategy.token.$storage._state['_token.customStrategy']
+					authorization: this.$auth.strategy.token.get()
 				}
 			});
 

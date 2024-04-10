@@ -10,6 +10,8 @@
 		>
 			Home
 		</v-btn>
+
+		<faculty-nav v-if="$auth.loggedIn" />
 		
 		<v-spacer />
 
@@ -58,6 +60,9 @@ export default {
 				}
 			]
 		};
+	},
+	mounted () {
+
 	},
 	methods: {
 		async logout () {
