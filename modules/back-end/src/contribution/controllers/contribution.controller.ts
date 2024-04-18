@@ -38,6 +38,41 @@ export class ContributionController {
     return await this.contributionService.getApprovedContributionList();
   }
 
+  @Get('approved-contribution-list/:id')
+  @UseGuards(AuthGuardJwt)
+  @ApiParam({
+    name: 'id',
+  })
+  async getApprovedContributionListOfFaculty(@Param('id') id) {
+    return await this.contributionService.getApprovedContributionListWithFaculty(id);
+  }
+
+  @Get('contribution-list/:id')
+  @UseGuards(AuthGuardJwt, RoleGuard)
+  @CheckRole(RoleName.MARKETING_COORDINATOR, RoleName.STUDENT)
+  @ApiParam({
+    name: 'id',
+  })
+  async getAllContributionListOfFaculty(@Param('id') id) {
+    return await this.contributionService.getAllContributionListWithFaculty(id);
+  }
+
+  @Get('contribution-list/')
+  @UseGuards(AuthGuardJwt, RoleGuard)
+  @CheckRole(RoleName.MARKETING_COORDINATOR, RoleName.STUDENT)
+  async getAllContributionList() {
+    return await this.contributionService.getAllContributionList();
+  }
+
+  @Get('approved-contribution-list/:id')
+  @UseGuards(AuthGuardJwt)
+  @ApiParam({
+    name: 'id',
+  })
+  async getNotApprovedContributionListOfFaculty(@Param('id') id) {
+    return await this.contributionService.getNotApprovedContributionListWithFaculty(id);
+  }
+
   @Post('create')
   @UseGuards(AuthGuardJwt, RoleGuard)
   @CheckRole(RoleName.STUDENT)

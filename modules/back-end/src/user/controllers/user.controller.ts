@@ -39,6 +39,7 @@ export class UserController {
 	}
 
 	@Get(':id')
+	@UseGuards(AuthGuard('jwtGate'))
 	@ApiParam({
 		name: 'id',
 	})
@@ -47,13 +48,10 @@ export class UserController {
 	}
 
 	@Patch('update-role/:id')
-	@UseGuards(AuthGuard('jwtGate'))
 	@ApiParam({
 		name: 'id',
 	})
-
 	@UseGuards(AuthGuard('jwtGate'), RoleGuard)
-	@CheckRole(RoleName.ADMIN)
 	async updateRole(
 		@Param('id') id: string,
 		@Body() payload: UpdateRoleRequest,
@@ -64,11 +62,9 @@ export class UserController {
 	}
 
 	@Patch('update-information/:id')
-	@UseGuards(AuthGuard('jwtGate'))
 	@ApiParam({
 		name: 'id',
 	})
-
 	@UseInterceptors(FileInterceptor('image'))
 	@UseGuards(AuthGuard('jwtGate'), RoleGuard)
 	@CheckRole(
@@ -77,8 +73,6 @@ export class UserController {
 		RoleName.MARKETING_COORDINATOR,
 		RoleName.MARKETING_MANAGER,
 	)
-
-	@UseGuards(AuthGuard('jwtGate'))
 	async updateInfo(
 		@Param('id') id: string,
 		@Body() payload: UpdateUserRequest,

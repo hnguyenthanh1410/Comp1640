@@ -1,7 +1,7 @@
-import VuexPersistence from 'vuex-persist'
+import VuexPersistence from 'vuex-persist';
  
 export default ({ store }) => {
 	new VuexPersistence({
-		module: ['faculty']
+		module: ['faculty', 'post']
 	}).plugin(store);
-}
+};

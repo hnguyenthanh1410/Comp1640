@@ -140,19 +140,74 @@ export class ContributionService {
   }
 
   public async getApprovedContributionList() {
-    const contributionList = await this.getContributionBaseQuery().getMany();
+    const contributionList = await this.getContributionBaseQuery()
+		.andWhere('json_extract(status, "$.name") = "Approved"')
+		.getMany();
 
-    return contributionList.filter(
-      (contribution) => contribution.status.name === 'Approved',
-    );
+    return contributionList;
   }
 
   public async getNotApprovedContributionList() {
-    const contributionList = await this.getContributionBaseQuery().getMany();
+    const contributionList = await this.getContributionBaseQuery()
+		.andWhere('json_extract(status, "$.name") = "Not approved"')
+		.getMany();
 
-    return contributionList.filter(
-      (contribution) => contribution.status.name === 'Not approved',
-    );
+    return contributionList;
+  }
+
+  public async getApprovedContributionListWithFaculty(slug) {
+	const contributionList = await this.getContributionBaseQuery()
+		.leftJoin('e.author', 'user')
+		.addSelect([
+			'user.lastName',
+			'user.firstName',
+			'user.faculty'
+		])
+		.andWhere('json_extract(faculty, "$.slug") = :slug AND json_extract(status, "$.name") = "Approved"', { slug })
+		.getMany();
+
+    return contributionList;
+  }
+
+  public async getAllContributionListWithFaculty(slug) {
+	const contributionList = await this.getContributionBaseQuery()
+		.leftJoin('e.author', 'user')
+		.addSelect([
+			'user.lastName',
+			'user.firstName',
+			'user.faculty'
+		])
+		.andWhere('json_extract(faculty, "$.slug") = :slug', { slug })
+		.getMany();
+
+    return contributionList;
+  }
+
+  public async getAllContributionList() {
+	const contributionList = await this.getContributionBaseQuery()
+		.leftJoin('e.author', 'user')
+		.addSelect([
+			'user.lastName',
+			'user.firstName',
+			'user.faculty'
+		])
+		.getMany();
+
+    return contributionList;
+  }
+
+  public async getNotApprovedContributionListWithFaculty(slug) {
+	const contributionList = await this.getContributionBaseQuery()
+		.leftJoin('e.author', 'user')
+		.addSelect([
+			'user.lastName',
+			'user.firstName',
+			'user.faculty'
+		])
+		.andWhere('json_extract(faculty, "$.slug") = :slug AND json_extract(status, "$.name") = "Not approved"', { slug })
+		.getMany();
+
+    return contributionList
   }
 
   public async getContributionDetail(

@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<v-img src="/img/background.jpg" height="100vh">
+		<v-img src="/img/background.jpg">
 			<v-app-bar
 				app
 				elevate-on-scroll
@@ -25,7 +25,7 @@
 
 <script>
 export default {
-	name: "DefaultLayout"
+	name: "PostLayout"
 };
 </script>
 

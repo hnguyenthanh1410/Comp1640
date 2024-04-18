@@ -15,7 +15,7 @@
 			</div>
 
 			<v-img
-				:src="require('~/assets/img/logo.png')"
+				src="/img/logo.png"
 				width="100%"
 				contain
 				max-height="55%"
@@ -42,7 +42,7 @@
 <script>
 export default {
 	name: 'IndexPage',
-	auth: false,
+	auth: 'guest',
 	data () {
 		return {
 			headers: [

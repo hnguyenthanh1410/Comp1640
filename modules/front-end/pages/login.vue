@@ -33,7 +33,7 @@
 					</v-layout>
 
 					<v-img
-						:src="require('~/assets/img/logo.png')"
+						src="/img/logo.png"
 						width="45%"
 						contain
 						max-height="75%"
@@ -93,7 +93,7 @@ export default {
 					type: 'password',
 					rules: [
 						this.required,
-						(text) => text.length >= 8 ? !!text : "The password must be at least 8 character long."
+						(text) => text.length >= 4 ? !!text : "The password must be at least 4 character long."
 					]
 				}
 			],

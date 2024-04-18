@@ -5,7 +5,7 @@
 			:ripple="false"
 			to="/"
 			text
-			class="transparent text-capitalize"
+			class="transparent text-capitalize text-h6 font-weight-regular"
 			plain
 		>
 			Home
@@ -23,7 +23,7 @@
 				:ripple="false"
 				:to="header.link"
 				text
-				class="transparent text-capitalize"
+				class="transparent text-capitalize text-h6 font-weight-regular"
 				plain
 			>
 				{{ header.text }}
@@ -35,7 +35,7 @@
 			color="black"
 			:ripple="false"
 			text
-			class="transparent text-capitalize"
+			class="transparent text-capitalize text-h6 font-weight-regular"
 			plain
 			@click="logout"
 		>

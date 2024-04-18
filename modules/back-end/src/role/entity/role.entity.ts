@@ -3,9 +3,9 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum RoleName {
   ADMIN = 1,
-  MARKETING_MANAGER,
-  MARKETING_COORDINATOR,
-  STUDENT,
+  MARKETING_COORDINATOR = 2,
+  MARKETING_MANAGER = 3,
+  STUDENT = 4,
   GUEST,
 }
 

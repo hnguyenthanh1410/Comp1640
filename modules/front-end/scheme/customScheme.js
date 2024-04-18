@@ -10,10 +10,10 @@ export default class CustomSchema extends Oauth2Scheme {
 				data
 			});
 
-			this.$auth.setUserToken(token.data.accessToken, token.data.refreshToken);
+			this.$auth.strategy.token.set(token.data.accessToken);
+			this.$auth.strategy.refreshToken.set(token.data.refreshToken);
+			
 			await this.$auth.fetchUser();
-
-			window.location.replace('http://localhost:3000/');
 		} catch (err) {
 			console.log(err);
 		}
@@ -30,8 +30,6 @@ export default class CustomSchema extends Oauth2Scheme {
 			});
 
 			this.$auth.reset();
-
-			window.location.replace('http://localhost:3000/');
 		} catch (err) {
 			console.log(err);
 		}
@@ -47,7 +45,10 @@ export default class CustomSchema extends Oauth2Scheme {
 				}
 			});
 
-			this.$auth.setUserToken(token.data.accessToken, token.data.refreshToken);
+			this.$auth.strategy.token.set(token.data.accessToken);
+			this.$auth.strategy.refreshToken.set(token.data.refreshToken);
+
+			await this.$auth.fetchUser();
 		} catch (err) {
 			console.log(err);
 		}

@@ -27,7 +27,8 @@ export default {
 	// Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
 	plugins: [
 		'~/plugins/getData',
-		{ src: '~/plugins/vuex-persist', ssr: false }
+		{ src: '~/plugins/vuex-persist', ssr: false },
+		'~/plugins/checkRole'
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
@@ -62,24 +63,19 @@ export default {
 	// Auth options
 	auth: {
 		plugins: ['~/plugins/auth'],
-		redirect: {
-			login: '/',
-			logout: '/',
-			home: '/'
-		},
 		strategies: {
 			customStrategy: {
 				scheme: '~/scheme/customScheme',
 				endpoints: {
 					authorization: 'http://localhost:8080/auth/sign-in',
-					token: false,
+					token: 'http://localhost:8080/auth/refresh-token',
 					logout: 'http://localhost:8080/auth/logout',
 					userInfo: 'http://localhost:8080/user/getUserInfo'
 				},
 				token: {
 					property: 'accessToken',
 					type: 'Bearer',
-					maxAge: 1800
+					maxAge: 30
 				},
 				refreshToken: {
 					property: 'refreshToken',
@@ -88,7 +84,8 @@ export default {
 				},
 				responseType: 'token',
 				grantType: 'authorization_code',
-				autoLogout: true
+				resetOnError: true,
+				
 			}
 		}
 	},

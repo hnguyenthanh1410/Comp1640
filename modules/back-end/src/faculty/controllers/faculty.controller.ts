@@ -7,7 +7,6 @@ export class FacultyController {
   constructor(private readonly facultyService: FacultyService) {}
 
   @Get('get-all')
-  @UseGuards(AuthGuard('jwtGate'))
   async getListFaculty() {
     return await this.facultyService.getAllFaculties();
   }

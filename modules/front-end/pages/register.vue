@@ -33,6 +33,7 @@
 						/>
 
 						<v-select
+							v-model="form.faculty"
 							label="Your Major"
 							disable-lookup
 							light
@@ -43,7 +44,7 @@
 					</v-layout>
 
 					<v-img
-						:src="require('~/assets/img/logo.png')"
+						src="/img/logo.png"
 						width="45%"
 						contain
 						max-height="75%"
@@ -74,6 +75,7 @@
 
 <script>
 import axios from 'axios';
+import { mapFields } from 'vuex-map-fields';
 export default {
 	name: 'LoginPage',
 	auth: 'guest',
@@ -134,24 +136,6 @@ export default {
 					]
 				}
 			],
-			faculty: [
-				{
-					text: "Information Technology",
-					value: "it"
-				},
-				{
-					text: "Business",
-					value: "business"
-				},
-				{
-					text: "Graphic Design",
-					value: "graphicDesign"
-				},
-				{
-					text: "Marketing",
-					value: "marketing"
-				}
-			],
 			valid: false,
 			form: {
 				email: '',
@@ -163,6 +147,24 @@ export default {
 				retypedPassword: ''
 			}
 		};
+	},
+	computed: {
+		...mapFields('faculty', ['faculties']),
+		faculty () {
+			const faculty = [];
+
+			this.faculties.forEach((f) => {
+				faculty.push({
+					text: f.name,
+					value: f.name
+				});
+			});
+
+			return faculty;
+		}
+	},
+	mounted () {
+		if (!this.faculties.lenght) this.$store.dispatch('faculty/getData');
 	},
 	methods: {
 		required (text) {

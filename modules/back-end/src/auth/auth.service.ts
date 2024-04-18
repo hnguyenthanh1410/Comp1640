@@ -141,7 +141,7 @@ export class AuthService {
 		if (user && await bcrypt.compare(signInRequest.password, user.password)) {
 			const tokens = await this.getTokens(user.id, user.username);
 
-			this.updateRefreshToken(user.id, tokens.refreshToken)
+			this.updateRefreshToken(user.id, tokens.refreshToken);
 			return tokens;
 		} else if (user && await !bcrypt.compare(signInRequest.password, user.password)) {
 			throw new BadRequestException('Invaild email or password has been provided.')
@@ -157,7 +157,7 @@ export class AuthService {
 			]
 		})
 
-		const refreshTokenMatch = await bcrypt.compare(refreshToken, user.refreshToken);
+		const refreshTokenMatch = await bcrypt.compare(refreshToken.replace('Bearer', '').trim(), user.refreshToken);
 
 		if (!refreshTokenMatch) throw new ForbiddenException('Forbidden Access');
 
