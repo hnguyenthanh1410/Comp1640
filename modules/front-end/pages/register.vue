@@ -114,7 +114,7 @@ export default {
 					type: 'password',
 					rules: [
 						this.required,
-						(text) => text.length >= 8 ? !!text : "The password must be at least 8 character long."
+						(text) => text.length >= 4 ? !!text : "The password must be at least 8 character long."
 					]
 				},
 				{
@@ -123,7 +123,7 @@ export default {
 					type: 'password',
 					rules: [
 						this.required,
-						(text) => text.length >= 8 ? !!text : "The password must be at least 8 character long.",
+						(text) => text.length >= 4 ? !!text : "The password must be at least 8 character long.",
 						(text) => text === this.form.password || "The password does not match."
 					]
 				},
@@ -172,11 +172,14 @@ export default {
 		},
 		async submit () {
 			try {
-				await axios({
+				const user = await axios({
 					url: "http://localhost:8080/auth/create-user",
 					method: "post",
 					data: this.form
 				});
+
+				this.$auth.setUserToken(user.data.accessToken, user.data.refreshToken);
+				this.$auth.fetchUser();
 			} catch (err) {
 				console.log(err);
 			}
