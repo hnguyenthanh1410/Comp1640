@@ -175,7 +175,7 @@ export default {
 
 		async update () {
 			const extended = _.cloneDeep(this.form.extend);
-			const files = this.form.files;
+			const docs = this.form.files;
 			const photos = this.form.photos;
 			delete this.form.files;
 			delete this.form.photos;
@@ -188,10 +188,8 @@ export default {
 					{
 						...this.form,
 						dueDate: extended.dueDate,
-						files: {
-							photos,
-							files
-						}
+						docs,
+						photos
 					},
 					'patch',
 					{
