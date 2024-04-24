@@ -1,3 +1,4 @@
+import { property } from 'lodash';
 import colors from 'vuetify/es5/util/colors';
 
 export default {
@@ -64,29 +65,36 @@ export default {
 	auth: {
 		plugins: ['~/plugins/auth'],
 		strategies: {
-			customStrategy: {
-				scheme: '~/scheme/customScheme',
+			local: {
+				scheme: 'refresh',
 				endpoints: {
-					authorization: 'http://localhost:8080/auth/sign-in',
-					token: 'http://localhost:8080/auth/refresh-token',
-					logout: 'http://localhost:8080/auth/logout',
-					userInfo: 'http://localhost:8080/user/getUserInfo'
+					login: { url: 'http://localhost:8080/auth/sign-in', post: 'post' },
+					refresh: { url: 'http://localhost:8080/auth/refresh-token', post: 'post' },
+					logout: { url: 'http://localhost:8080/auth/logout', post: 'post' },
+					user: { url: 'http://localhost:8080/user/getUserInfo', post: 'get' }
 				},
 				token: {
 					property: 'accessToken',
+					data: 'accessToken',
 					type: 'Bearer',
 					maxAge: 30
 				},
 				refreshToken: {
+					data: 'refreshToken',
 					property: 'refreshToken',
 					type: 'Bearer',
-					maxAge: 60 * 60 * 3
+					maxAge: 60 * 60 * 3,
+					tokenRequired: true
 				},
-				responseType: 'token',
-				grantType: 'authorization_code',
-				resetOnError: true,
-				
+				user: {
+					property: false
+				}
 			}
+		},
+		resetOnError: true,
+		redirect: {
+			login: '/login',
+			logout: '/'
 		}
 	},
 
@@ -98,7 +106,7 @@ export default {
 			customProperties: true
 		},
 		theme: {
-			dark: true,
+			dark: false,
 			themes: {
 				dark: {
 					primary: colors.blue.darken2,

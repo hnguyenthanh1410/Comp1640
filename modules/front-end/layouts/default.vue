@@ -28,9 +28,3 @@ export default {
 	name: "DefaultLayout"
 };
 </script>
-
-<style>
-html {
-	overflow-y: scroll;
-}
-</style>

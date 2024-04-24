@@ -16,15 +16,15 @@ export default {
 	props: {
 		width: {
 			type: String,
-			default: '70vw'
+			default: undefined
 		},
 		height: {
 			type: String,
-			default: '40vh'
+			default: undefined
 		},
 		indexClass: {
-			type: Object,
-			default: () => {}
+			type: [Object, String],
+			default: undefined
 		}
 	}
 };

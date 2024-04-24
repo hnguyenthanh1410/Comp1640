@@ -5,7 +5,8 @@ export const state = () => ({
 });
 
 export const getters = {
-	getField
+	getField,
+	getFacultyBySlug: (state) => (slug) => state.faculties.find((faculty) => faculty.slug === slug)
 };
 
 export const actions = {

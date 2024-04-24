@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class UpdateContributionRequest {
   @IsString()
@@ -7,5 +7,11 @@ export class UpdateContributionRequest {
   @IsString()
   description: string;
 
-  files?: string[];
+  @IsDate()
+  @IsOptional()
+  dueDate?: Date;
+
+  docs?: string[];
+
+  photos?: string[];
 }

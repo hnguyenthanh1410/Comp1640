@@ -110,7 +110,16 @@ export class AuthService {
 			studentRole = await this.roleRepository.save(studentRole);
 		}
 
-		user.role = studentRole;
+		if (!createUserRequest.role) {
+			user.role = studentRole;
+		} else {
+			const role = await this.roleRepository.findOne({
+				where: { name: createUserRequest.role }
+			})
+
+			user.role = role;
+			if (role.name !== RoleName.MARKETING_COORDINATOR) user.faculty = undefined;
+		}
 
 		const savedUser = await this.userRepository.save(user);
 

@@ -1,44 +1,44 @@
 <template>
-	<v-layout class="h-100">
-		<v-card
-			width="95vw"
-			color="white"
-			class="mx-auto my-auto align-self-center"
+	<v-card
+		width="95vw"
+		color="white"
+		:height="posts.length ? undefined : '85%'"
+		class="ma-auto align-self-center"
+	>
+		<v-card-title
+			class="black--text text-h3"
 		>
-			<div
-				class="black--text text-h3 mt-3"
-				style="text-align: center;"
-			>
-				{{ title }}
-			</div>
+			<div class="pt-5 mx-auto"> {{ title }} </div>
+		</v-card-title>
 
-			<post-card :posts="posts" />
-		</v-card>
-	</v-layout>
+		<post-card v-if="loading" :posts="posts" />
+	</v-card>
 </template>
 
 <script>
 import { mapFields } from 'vuex-map-fields';
+import { mapGetters } from 'vuex';
+
 export default {
 	name: 'PostPage',
 	layout: 'post',
 	middleware: ['faculty'],
 	data () {
 		return {
-			title: ''
+			title: '',
+			loading: true
 		};
 	},
 	computed: {
 		...mapFields('faculty', ['faculties']),
-		...mapFields('post', ['posts'])
+		...mapFields('post', ['posts']),
+		...mapGetters({
+			getFacultyBySlug: 'faculty/getFacultyBySlug'
+		})
 	},
 	async mounted () {
 		if (!this.faculties.lenght) await this.$store.dispatch('faculty/getData');
-		this.faculties.forEach((faculty) => {
-			if (this.$route.params.id && this.$route.params.id === faculty.slug) {
-				this.title = faculty.name;
-			}
-		});
+		this.title = this.getFacultyBySlug(this.$route.params.id).name;
 
 		await this.$store.dispatch('post/getData');
 	}

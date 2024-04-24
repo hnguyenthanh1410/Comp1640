@@ -1,50 +1,147 @@
 <template>
-	<v-layout column class="w-100 h-100">
-		<v-card
-			v-for="(post, key) of posts"
-			:key="key"
-			width="100%"
-			:disabled="!!post.height"
-			light
-			class="my-4"
-			:to="'/upload/' + post.id"
+	<v-layout
+		column
+		class="w-100"
+		:class="{
+			'h-100': !posts.length
+		}"
+	>
+		<v-layout
+			v-if="!posts.length"
+			align-center
+			justify-center
+			column
+			class="black--text"
 		>
-			<v-card-title class="black--text text-h5 font-weight-bold">
-				{{ post.name }}
-			</v-card-title>
-			
-			<v-card-text class="black--text text-h5 font-weight-regular">
-				<v-layout v-if="post.type === 'no-data'" class="d-flex justify-center">
-					{{ post.description }}
-				</v-layout>
+			<div class="text-h4 font-weight-bold">No Post</div>
+					
+			<div>No post in {{ getFacultyBySlug($route.params.id)?.name }} was found.</div>
+		</v-layout>
 
-				<v-layout v-else class="w-100" align-center>
-					<v-img
-						src="/img/illustration-gallery-icon_53876-27002.png"
-						contain
-						width="10%"
-						height="10%"
-						class="mr-5"
-					/>
-					<v-layout column class="w-100">
-						<div>{{ post.description }}</div>
-						<div v-if="post.status.name === 'Not approved'">
-							Due date: {{ new Date(post.period.closureDate).toLocaleDateString('en-GB') }}
-						</div>
-					</v-layout>
-				</v-layout>
-			</v-card-text>
-		</v-card>
+		<div
+			v-else
+			:class="{
+				'px-10': mode !== 'viewDetail'
+			}"
+		>
+			<v-card
+				v-for="(post, key) of posts"
+				:key="key"
+				:width="width"
+				:height="height"
+				
+				class="d-flex flex-column"
+				:class="{
+					'ma-auto': mode === 'viewDetail',
+					'my-5': posts.length !== key + 1 && mode !== 'viewDetail',
+					'mt-5': posts.length === key + 1 && mode !== 'viewDetail'
+				}"
+				:ripple="false"
+				@click="push(post.status?.name, post.id, post.period)"
+			>
+				<v-card-title class="black--text text-h5 font-weight-bold">
+					<v-btn
+						v-if="mode === 'viewDetail'"
+						color="black"
+						class="font-weight-black"
+						outlined
+						plain
+						text
+						:ripple="false"
+						@click="$router.back()"
+					>
+					
+						<v-icon>mdi-arrow-left</v-icon>
+					</v-btn>
+
+					<div
+						:class="{
+							'mx-auto': mode === 'viewDetail'
+						}"
+					>
+						{{ post.name }}
+					</div>
+				</v-card-title>
+			
+				<v-card-text
+					class="black--text text-h5 font-weight-regular"
+					style="flex: auto"
+				>
+					<v-row
+						class="w-100"
+						:class="{
+							'h-100': mode === 'viewDetail'
+						}"
+						no-gutters
+					>
+						<v-col :cols="mode === 'viewDetail' ? '3' : '5'">
+							<v-img
+								src="/img/illustration-gallery-icon_53876-27002.png"
+								contain
+								width="65%"
+								height="100%"
+								class="ma-auto"
+							/>
+						</v-col>
+					
+						<v-col :cols="mode === 'viewDetail' ? '9' : '7'">
+							<v-layout
+								column
+								class="w-100 h-100"
+								justify-center
+							>
+								<div>Author: {{ post.author.firstName + ' ' + post.author.lastName }}</div>
+
+								<div>{{ post.description }}</div>
+
+								{{ !(post.status.name === 'Not approved') ? 'Post date:' : 'Due date:' }} {{ post.period ? new Date(post.period?.closureDate).toLocaleDateString('en-GB') : 'No Date' }}
+
+							</v-layout>
+						</v-col>
+					</v-row>
+				</v-card-text>
+			</v-card>
+		</div>
 	</v-layout>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
 	name: 'PostCard',
 	props: {
 		posts: {
 			type: Array,
 			required: true
+		},
+		width: {
+			type: [String, Number],
+			default: '100%'
+		},
+		height: {
+			type: [String, Number],
+			default: undefined
+		},
+		mode: {
+			type: String,
+			default: 'list'
+		}
+	},
+	computed: {
+		...mapGetters({
+			getFacultyBySlug: 'faculty/getFacultyBySlug'
+		})
+	},
+	methods: {
+		push (status, id, period) {
+			if (!status) return;
+
+			if (this.$checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT']) && status === 'Not approved') {
+				this.$router.push('/upload/' + id);
+			} else {
+				this.$router.push('/viewPost/' + id);
+			}
 		}
 	}
 };

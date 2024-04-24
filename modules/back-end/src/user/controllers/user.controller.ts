@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Patch,
@@ -27,7 +28,10 @@ export class UserController {
 	constructor(private readonly userService: UserService) { }
 
 	@Get()
-	@UseGuards(AuthGuard('jwtGate'))
+	@UseGuards(AuthGuard('jwtGate'), RoleGuard)
+	@CheckRole(
+		RoleName.ADMIN
+	)
 	async getAll(): Promise<GetUserResponse[]> {
 		return await this.userService.getAllUsers();
 	}
@@ -81,5 +85,17 @@ export class UserController {
 		const user = await this.getDetail(id);
 
 		return await this.userService.updateUserInformation(user, image, payload);
+	}
+
+	@Delete(':id')
+	@ApiParam({
+		name: 'id'
+	})
+	@UseGuards(AuthGuard('jwtGate'), RoleGuard)
+	@CheckRole(
+		RoleName.ADMIN
+	)
+	async deleteUser (@Param('id') id: string) {
+		await this.userService.deleteUser(id);
 	}
 }

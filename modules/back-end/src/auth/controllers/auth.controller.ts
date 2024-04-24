@@ -19,11 +19,11 @@ import { AuthGuardLocal } from '../auth-guard.local.guard';
 import { EmailUserRequest } from 'src/user/dtos/email.user.dto';
 import { CodeRequest } from '../dtos/code.dto';
 import { PasswordUserRequest } from 'src/user/dtos/password.user.dto';
-import { RefreshJwtStrategy } from '../refreshToken.strategy';
-import { JwtStrategy } from '../jwt.strategy';
 import { Request } from 'express';
-import { log } from 'console';
 import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from 'src/role/role.guard';
+import { CheckRole } from 'src/role/role.decorator';
+import { RoleName } from 'src/role/entity/role.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -42,6 +42,13 @@ export class AuthController {
 	@Post('create-user')
 	async create(@Body() createUserRequest: CreateUserRequest) {
 		return await this.authService.createNewUser(createUserRequest);
+	}
+
+	@Post('create-user-with-role')
+	@UseGuards(AuthGuard('jwtGate'), RoleGuard)
+	@CheckRole(RoleName.ADMIN)
+	async createUser(@Body() CreateUserRequest: CreateUserRequest) {
+		return await this.authService.createNewUser(CreateUserRequest)
 	}
 
 	@Post('send-code')

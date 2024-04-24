@@ -27,7 +27,7 @@
 							:type="header.type || 'text'"
 							:label="header.label"
 							:rules="header.rules"
-							light
+							
 							outlined
 						/>
 					</v-layout>
@@ -110,7 +110,7 @@ export default {
 		},
 		async submit () {
 			try {
-				await this.$auth.login(this.form);
+				await this.$auth.login({ data: this.form });
 			} catch (err) {
 				console.log(err);
 			}

@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<v-img src="/img/background.jpg">
+		<v-img src="/img/background.jpg" content-class="h-100">
 			<v-app-bar
 				app
 				elevate-on-scroll
@@ -13,7 +13,7 @@
 			</v-app-bar>
 
 			<v-main class="h-100">
-				<v-container fluid class="h-100 mx-0 pa-0">
+				<v-container fluid class="h-100 mx-0 py-10">
 					<Nuxt />
 				</v-container>
 			</v-main>
@@ -28,9 +28,3 @@ export default {
 	name: "PostLayout"
 };
 </script>
-
-<style>
-html {
-	overflow-y: scroll;
-}
-</style>

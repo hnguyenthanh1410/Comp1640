@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Faculty } from 'src/faculty/entity/faculty.entity';
-import { Role } from 'src/role/entity/role.entity';
+import { Role, RoleName } from 'src/role/entity/role.entity';
 
 export class CreateUserRequest {
   @IsNotEmpty()
@@ -24,6 +24,10 @@ export class CreateUserRequest {
 
   @IsNotEmpty()
   faculty: string;
+
+  @IsNotEmpty()
+  @IsOptional()
+  role?: RoleName;
 }
 
 export class GetUserResponse {

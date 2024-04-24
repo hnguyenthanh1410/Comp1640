@@ -90,8 +90,8 @@ export class CommentService {
       createdAt: result.createdAt,
       updatedAt: result.updatedAt,
       author: result.author,
-      contributionId: result.contribution.id,
-      parentId: result.parent ? result.parent.id : null,
+      contribution: result.contribution,
+      parent: result.parent
     };
   }
 
@@ -109,7 +109,7 @@ export class CommentService {
       });
     }
 
-    const createdComment = await this.commentRepository.save({
+    const insertResult = await this.commentRepository.insert({
       content: payload.content,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -117,6 +117,9 @@ export class CommentService {
       parent: parentComment ?? null,
       author: user,
     });
+
+	const commentId = insertResult.generatedMaps[0].id;
+	const createdComment = await this.getComment(commentId);
 
     const { password, ...info } = user;
     const comment = {

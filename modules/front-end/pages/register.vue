@@ -28,7 +28,7 @@
 							:type="header.type || 'text'"
 							:label="header.label"
 							:rules="header.rules"
-							light
+							
 							outlined
 						/>
 
@@ -36,7 +36,7 @@
 							v-model="form.faculty"
 							label="Your Major"
 							disable-lookup
-							light
+							
 							outlined
 							:items="faculty"
 							:rules="[required]"
@@ -175,9 +175,7 @@ export default {
 				await axios({
 					url: "http://localhost:8080/auth/create-user",
 					method: "post",
-					data: {
-						...this.form
-					}
+					data: this.form
 				});
 			} catch (err) {
 				console.log(err);

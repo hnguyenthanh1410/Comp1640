@@ -52,7 +52,9 @@ export class UserService {
 	}
 
 	public async getAllUsers(): Promise<GetUserResponse[]> {
-		const userList = await this.getUserBaseQuery().getMany();
+		const userList = await this.getUserBaseQuery()
+			.andWhere("JSON_extract(role, '$.name') != 1")
+			.getMany();
 		return userList.map((user) => {
 			return {
 				id: user.id,
@@ -61,8 +63,7 @@ export class UserService {
 				firstName: user.firstName,
 				lastName: user.lastName,
 				faculty: user.faculty,
-				role: user.role,
-				refreshToken: user.refreshToken
+				role: user.role
 			};
 		});
 	}
@@ -70,19 +71,7 @@ export class UserService {
 	public async getUserDetail(id: string): Promise<GetUserResponse | undefined> {
 		const user = await this.checkExistedUser(id);
 
-		return {
-			id: user.id,
-			username: user.username,
-			email: user.email,
-			firstName: user.firstName,
-			lastName: user.lastName,
-			faculty: user.faculty,
-			role: user.role,
-			phone: user.phone,
-			address: user.address,
-			avatar: user.avatar,
-			refreshToken: user.refreshToken
-		};
+		return user;
 	}
 
 	public async getUserInfo(username: string) {
@@ -132,5 +121,14 @@ export class UserService {
 			...(image && { avatar: payload.avatar }),
 			refreshToken: payload.refreshToken
 		});
+	}
+
+	public async deleteUser(id: string) {
+		const existedUser = await this.checkExistedUser(id);
+		
+		if (!existedUser) throw new BadRequestException('No exist user with the id');
+
+
+		await this.userRepository.remove(existedUser);
 	}
 }

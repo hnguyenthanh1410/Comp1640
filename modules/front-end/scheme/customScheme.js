@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Oauth2Scheme } from "~auth/runtime";
+import { RefreshScheme } from "~auth/runtime";
 
-export default class CustomSchema extends Oauth2Scheme {
+export default class CustomSchema extends RefreshScheme {
 	async login (data) {
 		try {
 			const token = await axios({
@@ -10,8 +10,7 @@ export default class CustomSchema extends Oauth2Scheme {
 				data
 			});
 
-			this.$auth.strategy.token.set(token.data.accessToken);
-			this.$auth.strategy.refreshToken.set(token.data.refreshToken);
+			this.$auth.setUserToken(token.data.accessToken, token.data.refreshToken);
 			
 			await this.$auth.fetchUser();
 		} catch (err) {
@@ -28,11 +27,12 @@ export default class CustomSchema extends Oauth2Scheme {
 					authorization: this.$auth.strategy.token.get()
 				}
 			});
-
-			this.$auth.reset();
 		} catch (err) {
 			console.log(err);
 		}
+
+		localStorage.clear();
+		this.$auth.reset();
 	}
 
 	async refreshTokens () {
@@ -45,12 +45,13 @@ export default class CustomSchema extends Oauth2Scheme {
 				}
 			});
 
-			this.$auth.strategy.token.set(token.data.accessToken);
-			this.$auth.strategy.refreshToken.set(token.data.refreshToken);
+			this.$auth.setUserToken(token.data.accessToken, token.data.refreshToken);
 
 			await this.$auth.fetchUser();
 		} catch (err) {
-			console.log(err);
+			this.$store.reset();
 		}
+
+		localStorage.clear();
 	}
 };
