@@ -23,6 +23,7 @@ export default {
 	name: 'PostPage',
 	layout: 'post',
 	middleware: ['faculty'],
+	auth: 'guest',
 	data () {
 		return {
 			title: '',
@@ -37,7 +38,6 @@ export default {
 		})
 	},
 	async mounted () {
-		if (!this.faculties.lenght) await this.$store.dispatch('faculty/getData');
 		this.title = this.getFacultyBySlug(this.$route.params.id).name;
 
 		await this.$store.dispatch('post/getData');

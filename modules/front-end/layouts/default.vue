@@ -24,7 +24,15 @@
 </template>
 
 <script>
+import { mapFields } from 'vuex-map-fields';
+
 export default {
-	name: "DefaultLayout"
+	name: "DefaultLayout",
+	computed: {
+		...mapFields('faculty', ['faculties'])
+	},
+	async mounted () {
+		if (!this.faculties.lenght) await this.$store.dispatch('faculty/getData');
+	}
 };
 </script>

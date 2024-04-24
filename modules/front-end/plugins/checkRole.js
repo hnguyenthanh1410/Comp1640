@@ -14,7 +14,7 @@ export default ({ app }, inject) => {
 			roles?.forEach((role) => {
 				const roleName = RoleNames[role];
 
-				if (app.$auth.user.role.name === roleName) {
+				if (app.$auth.user?.role?.name === roleName) {
 					verified = true;
 				}
 			});

@@ -3,7 +3,7 @@
 		column
 		class="w-100"
 		:class="{
-			'h-100': !posts.length
+			'h-100': mode === 'viewDetail'
 		}"
 	>
 		<v-layout
@@ -21,7 +21,8 @@
 		<div
 			v-else
 			:class="{
-				'px-10': mode !== 'viewDetail'
+				'px-10': mode !== 'viewDetail',
+				'ma-auto': mode === 'viewDetail',
 			}"
 		>
 			<v-card
@@ -32,7 +33,6 @@
 				
 				class="d-flex flex-column"
 				:class="{
-					'ma-auto': mode === 'viewDetail',
 					'my-5': posts.length !== key + 1 && mode !== 'viewDetail',
 					'mt-5': posts.length === key + 1 && mode !== 'viewDetail'
 				}"
@@ -134,7 +134,7 @@ export default {
 		})
 	},
 	methods: {
-		push (status, id, period) {
+		push (status, id) {
 			if (!status) return;
 
 			if (this.$checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT']) && status === 'Not approved') {

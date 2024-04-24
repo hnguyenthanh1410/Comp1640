@@ -32,6 +32,7 @@
 				color="#ffffff"
 				width="60%"
 				class="black my-2 rounded-lg text-capitalize"
+				@click="header.actions"
 			>
 				{{ header.text }}
 			</v-btn>
@@ -40,9 +41,15 @@
 </template>
 
 <script>
+import { mapFields } from 'vuex-map-fields';
+
 export default {
 	name: 'IndexPage',
 	auth: 'guest',
+	middleware ({ store, redirect }) {
+		console.log(store.state.user);
+		if (store.state.user.guestState) redirect('/faculty/' + store.state.faculty.faculties[0].slug);
+	},
 	data () {
 		return {
 			headers: [
@@ -52,7 +59,7 @@ export default {
 				},
 				{
 					text: "Guest",
-					link: "/guest"
+					actions: this.toggleState
 				},
 				{
 					text: "Register",
@@ -60,6 +67,17 @@ export default {
 				}
 			]
 		};
+	},
+	computed: {
+		...mapFields('user', ['guestState']),
+		...mapFields('faculty', ['faculties'])
+	},
+	methods: {
+		toggleState () {
+			this.$store.dispatch('user/updateGuestState', !this.guestState);
+
+			this.$router.push('/faculty/' + this.faculties[0].slug);
+		}
 	}
 };
 </script>

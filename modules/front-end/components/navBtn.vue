@@ -11,11 +11,11 @@
 			Home
 		</v-btn>
 
-		<faculty-nav v-if="$auth.loggedIn" />
+		<faculty-nav v-if="$auth.loggedIn || guestState" />
 		
 		<v-spacer />
 
-		<div v-if="!$auth.loggedIn">
+		<div v-if="!$auth.loggedIn && !guestState">
 			<v-btn
 				v-for="(header, key) of headers"
 				:key="key"
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { mapFields } from 'vuex-map-fields';
+
 export default {
 	name: "NavBtn",
 	data () {
@@ -61,12 +63,18 @@ export default {
 			]
 		};
 	},
-	mounted () {
-
+	computed: {
+		...mapFields('user', ['guestState'])
 	},
 	methods: {
 		async logout () {
-			await this.$auth.logout();
+			if (!this.guestState) {
+				await this.$auth.logout();
+				return;
+			}
+
+			this.$store.dispatch('user/updateGuestState', false);
+			this.$router.push('/');
 		}
 	}
 };

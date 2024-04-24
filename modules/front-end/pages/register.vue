@@ -163,9 +163,6 @@ export default {
 			return faculty;
 		}
 	},
-	mounted () {
-		if (!this.faculties.lenght) this.$store.dispatch('faculty/getData');
-	},
 	methods: {
 		required (text) {
 			return !!text || "This field is required.";
