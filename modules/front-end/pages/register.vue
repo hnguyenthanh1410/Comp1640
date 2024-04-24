@@ -153,7 +153,7 @@ export default {
 		faculty () {
 			const faculty = [];
 
-			this.faculties.forEach((f) => {
+			this.faculties?.forEach((f) => {
 				faculty.push({
 					text: f.name,
 					value: f.name
