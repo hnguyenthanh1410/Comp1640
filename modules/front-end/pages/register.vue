@@ -52,6 +52,7 @@
 					color="#ffffff"
 					width="50%"
 					class="black mx-2 rounded-lg"
+					@click="btn.type === 'submit' && submit"
 				>
 					{{ btn.text }}
 				</v-btn>
