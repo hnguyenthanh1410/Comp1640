@@ -6,22 +6,21 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from 'src/user/entity/user.entity';
 import { Repository } from 'typeorm';
 
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwtGate') {
-	constructor() {
-		super({
-			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-			secretOrKey: process.env.JWT_ACCESS_SECRET,
-		});
-	}
+  constructor() {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_ACCESS_SECRET,
+    });
+  }
 
-	public validate(payload) {
-		if (!payload) throw new UnauthorizedException('Unauthorized');
+  public validate(payload) {
+    if (!payload) throw new UnauthorizedException('Unauthorized');
 
-		return {
-			sub: payload.sub,
-			username: payload.username
-		};
-	}
+    return {
+      sub: payload.sub,
+      username: payload.username,
+    };
+  }
 }

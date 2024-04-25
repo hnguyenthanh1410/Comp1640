@@ -3,7 +3,8 @@
 		color="white"
 		:width="width"
 		:height="height"
-		class="d-flex flex-column align-center rounded-xl"
+		class="d-flex flex-column align-center rounded-xxl"
+		elevation="15"
 		:class="indexClass"
 	>
 		<slot />

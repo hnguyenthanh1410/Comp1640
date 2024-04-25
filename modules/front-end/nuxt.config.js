@@ -1,4 +1,3 @@
-import { property } from 'lodash';
 import colors from 'vuetify/es5/util/colors';
 
 export default {

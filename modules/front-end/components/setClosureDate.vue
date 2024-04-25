@@ -6,15 +6,12 @@
 		<template #activator="{ on, attrs }">
 			<v-btn
 				v-bind="attrs"
-				class="font-weight-bold white"
-				color="black"
-				outlined
-				plain
-				text
+				class="font-weight-bold mr-5"
+				dark
 				:ripple="false"
 				v-on="on"
 			>
-				Delete
+				Set Closure Date
 			</v-btn>
 		</template>
 
@@ -24,8 +21,17 @@
 			</v-card-title>
 
 			<v-card-text class="text-h6 font-weight-regular">
-				Do you want to delete this user {{ user.firstName + ' ' + user.lastName }}
-				<div>All the information of the following user would be deleted and cannot be recover</div>
+				<v-form v-model="valid">
+					<v-text-field
+						v-for="(header, key) of Object.keys(form)"
+						:key="key"
+						v-model="form[header]"
+						type="date"
+						:rules="[
+							(value) => !!value || 'Please select the date'
+						]"
+					/>
+				</v-form>
 			</v-card-text>
 
 			<v-card-actions>
@@ -39,14 +45,13 @@
 				</v-btn>
 
 				<v-btn
-					color="white"
-					class="red"
 					plain
 					text
 					:ripple="false"
+					:disabled="!valid"
 					@click="confirmDelete"
 				>
-					Delete
+					Set
 				</v-btn>
 			</v-card-actions>
 		</v-card>
@@ -56,20 +61,26 @@
 <script>
 export default {
 	name: 'DeleteDialog',
-	props: {
-		user: {
-			type: Object,
-			required: true
-		}
-	},
 	data () {
 		return {
-			isDialog: false
+			isDialog: false,
+			form: {
+				closureDate: '',
+				finalClosureDate: ''
+			},
+			valid: false
 		};
 	},
 	methods: {
 		async confirmDelete () {
-			await this.$getData.fetch('http://localhost:8080/user/' + this.user.id, {}, 'delete');
+			await this.$getData.fetch(
+				'http://localhost:8080/period/create',
+				{
+					...this.form,
+					year: new Date(this.form.finalClosureDate).getFullYear()
+				},
+				'post'
+			);
 
 			this.$emit('confirmDelete');
 			this.isDialog = false;

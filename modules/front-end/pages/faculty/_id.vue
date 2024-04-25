@@ -1,5 +1,6 @@
 <template>
 	<v-card
+		v-if="loading"
 		width="95vw"
 		color="white"
 		:height="posts.length ? undefined : '85%'"
@@ -8,10 +9,30 @@
 		<v-card-title
 			class="black--text text-h3"
 		>
-			<div class="pt-5 mx-auto"> {{ title }} </div>
+			<v-row class="mt-6">
+				<v-spacer />
+
+				<v-col cols="6" style="text-align: center;">
+					{{ title }}
+				</v-col>
+
+				<v-col cols="3" class="d-flex justify-end align-center">
+					<v-btn
+						v-if="$checkRole.isRole(['STUDENT'])"
+						dark
+						:ripple="false"
+						class="mr-5"
+						@click="$router.push('/upload')"
+					>
+						Create
+					</v-btn>
+
+					<set-closure-date v-if="$checkRole.isRole(['ADMIN'])" />
+				</v-col>
+			</v-row>
 		</v-card-title>
 
-		<post-card v-if="loading" :posts="posts" />
+		<post-card :posts="posts" />
 	</v-card>
 </template>
 
@@ -23,11 +44,11 @@ export default {
 	name: 'PostPage',
 	layout: 'post',
 	middleware: ['faculty'],
-	auth: 'guest',
+	auth: false,
 	data () {
 		return {
 			title: '',
-			loading: true
+			loading: false
 		};
 	},
 	computed: {
@@ -41,6 +62,8 @@ export default {
 		this.title = this.getFacultyBySlug(this.$route.params.id).name;
 
 		await this.$store.dispatch('post/getData');
+
+		this.loading = true;
 	}
 };
 </script>

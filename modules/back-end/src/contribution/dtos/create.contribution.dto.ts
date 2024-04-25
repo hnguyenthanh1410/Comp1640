@@ -12,9 +12,7 @@ export class CreateContributionRequest {
   @IsString()
   description: string;
 
-  docs?: string[];
-
-  photos?: string[];
+  files?: string[];
 }
 
 export class GetContributionResponse {
@@ -27,8 +25,6 @@ export class GetContributionResponse {
   createdAt: Date;
 
   files: string[];
-
-  photos: string[];
 
   status: Status;
 

@@ -13,7 +13,7 @@ export class PeriodController {
 
   @Post('create')
   @UseGuards(AuthGuardJwt, RoleGuard)
-  @CheckRole(RoleName.MARKETING_MANAGER)
+  @CheckRole(RoleName.ADMIN)
   async createPeriod(@Body() payload: CreatePeriodRequest): Promise<Period> {
     return await this.periodService.createPeriod(payload);
   }

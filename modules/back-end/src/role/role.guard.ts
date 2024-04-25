@@ -8,10 +8,10 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class RoleGuard implements CanActivate {
   constructor(
-	private reflector: Reflector,
-	@InjectRepository(User)
-	private userRepository: Repository<User>
-) {}
+    private reflector: Reflector,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride(ROLES_KEY, [
@@ -22,12 +22,10 @@ export class RoleGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-	const userInfo = await this.userRepository.findOne({
-		where: [
-			{ id: user.sub }
-		]
-	});
-	
+    const userInfo = await this.userRepository.findOne({
+      where: [{ id: user.sub }],
+    });
+
     const isRole = requiredRoles.includes(userInfo.role.name);
 
     if (isRole) return true;

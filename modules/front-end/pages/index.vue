@@ -3,9 +3,7 @@
 		<index-card
 			width="30vw"
 			height="55vh"
-			:index-class="{
-				'index-card': $vuetify.breakpoint.mdAndDown
-			}"
+			index-card="index-card"
 		>
 			<div
 				class="black--text text-h5 font-weight-regular mt-3"
@@ -46,9 +44,9 @@ import { mapFields } from 'vuex-map-fields';
 export default {
 	name: 'IndexPage',
 	auth: 'guest',
-	middleware ({ store, redirect }) {
-		console.log(store.state.user);
-		if (store.state.user.guestState) redirect('/faculty/' + store.state.faculty.faculties[0].slug);
+	middleware ({ store, redirect, $checkRole }) {
+		if (store.state.user.guestState || $checkRole.isRole(['MARKETING_MANAGER', 'ADMIN'])) redirect('/faculty/' + store.state.faculty.faculties[0].slug);
+		if ($checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT'])) redirect('/faculty/' + store.state.auth.user.faculty.slug);
 	},
 	data () {
 		return {

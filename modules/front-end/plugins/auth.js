@@ -1,9 +1,9 @@
-export default ({ $auth }) => {
-	$auth.onRedirect((_to, _from) => {
-		if ($auth.loggedIn) {
+export default ({ $auth, $checkRole }) => {
+	$auth.onRedirect(() => {
+		if ($auth.loggedIn && $checkRole.isRole(['STUDENT', 'MARKETING_COORDINATOR'])) {
 			return `/faculty/${$auth.user.faculty?.slug || 'marketing'}`;
-		} else {
-			return "/";
+		} else if (!$auth.loggedIn) {
+			return '/';
 		}
 	});
 };

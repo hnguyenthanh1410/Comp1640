@@ -1,15 +1,15 @@
 <template>
-	<div>
+	<div class="d-flex flex-column">
 		<v-row>
 			<v-col cols="3" class="black--text d-flex align-center text-h5 font-weight-regular">
 				Comment:
 			</v-col>
 
-			<v-col cols="7">
+			<v-col cols="7" class="d-flex">
 				<v-textarea
 					v-model="comment"
-					type="date"
 					hide-details
+					height="10vh"
 					solo
 					flat
 					outlined
@@ -29,7 +29,25 @@
 				<v-layout column>
 					<div>{{ com.content }}</div>
 
-					<v-row v-for="(children, comKey) of com.children" :key="comKey" no-gutters>
+					<v-row no-gutters>
+						<v-spacer />
+
+						<v-col cols="12">
+							<v-textarea
+								:value="childrenComment.find((child) => child.id === com.id)?.content"
+								height="10vh"
+								hide-details
+								solo
+								flat
+								outlined
+								no-resize
+								class="my-auto"
+								@change="(input) => updateChildrenComment(input, com.id)"
+							/>
+						</v-col>
+					</v-row>
+
+					<v-row v-for="(children, comKey) of com.children" :key="comKey">
 						<v-spacer />
 
 						<v-col cols="11">
@@ -37,7 +55,7 @@
 
 							<v-textarea
 								:value="childrenComment.find((child) => child.id === children.id)?.content"
-								type="date"
+								height="10vh"
 								hide-details
 								solo
 								flat

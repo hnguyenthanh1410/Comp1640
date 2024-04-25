@@ -11,7 +11,7 @@
 <script>
 export default {
 	name: 'ViewPostPage',
-	auth: 'guest',
+	auth: false,
 	data () {
 		return {
 			post: [],

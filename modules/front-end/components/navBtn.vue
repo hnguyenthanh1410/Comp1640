@@ -70,6 +70,7 @@ export default {
 		async logout () {
 			if (!this.guestState) {
 				await this.$auth.logout();
+				this.$router.push('/');
 				return;
 			}
 

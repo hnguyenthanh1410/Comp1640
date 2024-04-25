@@ -62,5 +62,5 @@ export class GetUserResponse {
 
   @IsString()
   @IsOptional()
-  refreshToken?: string
+  refreshToken?: string;
 }

@@ -13,7 +13,9 @@
 			column
 			class="black--text"
 		>
-			<div class="text-h4 font-weight-bold">No Post</div>
+			<div class="text-h4 font-weight-bold">
+				No Post
+			</div>
 					
 			<div>No post in {{ getFacultyBySlug($route.params.id)?.name }} was found.</div>
 		</v-layout>
@@ -50,7 +52,6 @@
 						:ripple="false"
 						@click="$router.back()"
 					>
-					
 						<v-icon>mdi-arrow-left</v-icon>
 					</v-btn>
 
@@ -95,7 +96,6 @@
 								<div>{{ post.description }}</div>
 
 								{{ !(post.status.name === 'Not approved') ? 'Post date:' : 'Due date:' }} {{ post.period ? new Date(post.period?.closureDate).toLocaleDateString('en-GB') : 'No Date' }}
-
 							</v-layout>
 						</v-col>
 					</v-row>
@@ -137,7 +137,7 @@ export default {
 		push (status, id) {
 			if (!status) return;
 
-			if (this.$checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT']) && status === 'Not approved') {
+			if (this.$checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT']) && status !== 'Approved') {
 				this.$router.push('/upload/' + id);
 			} else {
 				this.$router.push('/viewPost/' + id);

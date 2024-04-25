@@ -91,7 +91,7 @@ export class CommentService {
       updatedAt: result.updatedAt,
       author: result.author,
       contribution: result.contribution,
-      parent: result.parent
+      parent: result.parent,
     };
   }
 
@@ -118,8 +118,8 @@ export class CommentService {
       author: user,
     });
 
-	const commentId = insertResult.generatedMaps[0].id;
-	const createdComment = await this.getComment(commentId);
+    const commentId = insertResult.generatedMaps[0].id;
+    const createdComment = await this.getComment(commentId);
 
     const { password, ...info } = user;
     const comment = {

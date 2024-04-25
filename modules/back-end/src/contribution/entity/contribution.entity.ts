@@ -28,9 +28,6 @@ export class Contribution {
   @Column({ type: 'simple-array', nullable: true })
   files: string[];
 
-  @Column({ type: 'simple-array', nullable: true })
-  photos: string[];
-
   @Column({ type: 'json', nullable: true })
   status: Status;
 

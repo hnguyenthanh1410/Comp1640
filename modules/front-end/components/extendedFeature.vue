@@ -40,8 +40,8 @@
 			</v-row>
 
 			<comment-feature
-				v-model="form.comment"
 				:key="key"
+				v-model="form.comment"
 				:comments="comments"
 				@updateChildComment="(payload) => $emit('updateChildComment', payload)"
 			/>

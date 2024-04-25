@@ -28,7 +28,7 @@ import { RefreshJwtStrategy } from './refreshToken.strategy';
     RoleService,
     MediaService,
     FirebaseService,
-	RefreshJwtStrategy
+    RefreshJwtStrategy,
   ],
 })
 export class AuthModule {}

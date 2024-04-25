@@ -7,20 +7,23 @@ import { Repository } from 'typeorm';
 import { Request } from 'express';
 
 @Injectable()
-export class RefreshJwtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
-	constructor() {
-		super({
-			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-			secretOrKey: process.env.JWT_REFRESH_SECRET,
-		});
-	}
+export class RefreshJwtStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-refresh',
+) {
+  constructor() {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_REFRESH_SECRET,
+    });
+  }
 
-	public validate(payload) {
-		if (!payload) throw new UnauthorizedException('Unauthorized');
+  public validate(payload) {
+    if (!payload) throw new UnauthorizedException('Unauthorized');
 
-		return {
-			sub: payload.sub,
-			username: payload.username
-		};
-	}
+    return {
+      sub: payload.sub,
+      username: payload.username,
+    };
+  }
 }

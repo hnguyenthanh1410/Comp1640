@@ -11,7 +11,5 @@ export class UpdateContributionRequest {
   @IsOptional()
   dueDate?: Date;
 
-  docs?: string[];
-
-  photos?: string[];
+  files?: string[];
 }

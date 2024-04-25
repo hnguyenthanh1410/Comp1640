@@ -1,5 +1,5 @@
 <template>
-	<div class="w-100 h-100 d-flex flex-column ">
+	<div class="w-100 h-100 d-flex flex-column flex">
 		<div
 			class="black--text mt-10 mb-3 text-h4 font-weight-bold"
 			style="text-align: center;"
@@ -7,16 +7,18 @@
 			Upload
 		</div>
 
-		<v-form enctype="multipart/form-data" :disabled="!$checkRole.isRole(['STUDENT']) && !!id" class="flex-grow-1 align-center d-flex flex-column">
+		<v-form enctype="multipart/form-data" :disabled="!$checkRole.isRole(['STUDENT']) && !!id" class="align-center d-flex flex-column">
 			<v-row
 				v-for="(header, key) of headers"
 				:key="key"
 				class="w-100 align-center my-13 pr-10"
 				no-gutters
 			>
-				<v-col cols="2" class="black--text text-h5 font-weight-regular mx-5">{{ header.text }}</v-col>
+				<v-col cols="2" class="black--text text-h5 font-weight-regular mx-5">
+					{{ header.text }}
+				</v-col>
 
-				<v-col>
+				<v-col class="d-flex">
 					<v-textarea
 						v-if="header.type === 'text-area'"
 						v-model="form[header.value]"
@@ -36,7 +38,9 @@
 						multiple
 					/>
 
-					<div v-else-if="header.type === 'slot'" class="black--text text-h5 font-weight-regular"> {{ $data[header.value] }} </div>
+					<div v-else-if="header.type === 'slot'" class="black--text text-h5 font-weight-regular">
+						{{ $data[header.value] }}
+					</div>
 
 					<v-text-field
 						v-else
@@ -47,11 +51,21 @@
 					/>
 				</v-col>
 			</v-row>
+
+			<v-row v-if="$checkRole.isRole(['STUDENT']) && id" class="w-100 px-3">
+				<v-col cols="12" class="d-flex flex-column">
+					<comment-feature
+						v-model="form.extend.comment"
+						:comments="post.comments"
+						@updateChildComment="(payload) => childrenComment = payload"
+					/>
+				</v-col>
+			</v-row>
 		</v-form>
 
 		<v-layout
 			v-if="$checkRole.isRole(['STUDENT'])"
-			class="w-100 flex-shrink-1"
+			class="w-100 my-5"
 			justify-center
 			align-center
 		>
@@ -129,7 +143,7 @@ export default {
 					action: this.update
 				}
 			],
-			dueDate: 'TBD',
+			dueDate: 'Pending',
 			form: {
 				name: '',
 				description: '',
@@ -166,8 +180,32 @@ export default {
 		},
 
 		async create () {
+			const extended = _.cloneDeep(this.form.extend);
+			// const docs = this.form.files;
+			// const photos = this.form.photos;
+			// delete this.form.files;
+			// delete this.form.photos;
+
+			Object.keys(this.form.extend).forEach((key) => this.form.extend[key] = undefined);
+
 			try {
-				await console.log();
+				await this.$getData.fetch(
+					'http://localhost:8080/contribution/create',
+					{
+						...this.form,
+						dueDate: extended.dueDate
+						// files: [
+						// 	...photos,
+						// 	...docs
+						// ]
+					},
+					'post'
+					// {
+					// 	"Content-Type": "multipart/form-data"
+					// }
+				);
+
+				this.$router.back();
 			} catch (err) {
 
 			}
@@ -175,10 +213,10 @@ export default {
 
 		async update () {
 			const extended = _.cloneDeep(this.form.extend);
-			const docs = this.form.files;
-			const photos = this.form.photos;
-			delete this.form.files;
-			delete this.form.photos;
+			// const docs = this.form.files;
+			// const photos = this.form.photos;
+			// delete this.form.files;
+			// delete this.form.photos;
 
 			Object.keys(this.form.extend).forEach((key) => this.form.extend[key] = undefined);
 
@@ -187,14 +225,16 @@ export default {
 					'http://localhost:8080/contribution/update/' + this.id,
 					{
 						...this.form,
-						dueDate: extended.dueDate,
-						docs,
-						photos
+						dueDate: extended.dueDate
+						// files: [
+						// 	...photos,
+						// 	...docs
+						// ]
 					},
-					'patch',
-					{
-						"Content-Type": "multipart/form-data"
-					}
+					'patch'
+					// {
+					// 	"Content-Type": "multipart/form-data"
+					// }
 				);
 
 				if (extended.comment) {
@@ -238,3 +278,11 @@ export default {
 	}
 };
 </script>
+
+<style>
+.flex * {
+	min-width: 0;
+	min-height: 0;
+	flex-shrink: 1 !important;
+}
+</style>

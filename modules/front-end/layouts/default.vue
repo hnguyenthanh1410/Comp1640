@@ -13,7 +13,7 @@
 			</v-app-bar>
 
 			<v-main class="h-100">
-				<v-container fluid class="h-100 mx-0 pa-0">
+				<v-container fluid class="h-100 mx-0 pa-0 d-flex">
 					<Nuxt />
 				</v-container>
 			</v-main>
@@ -36,3 +36,9 @@ export default {
 	}
 };
 </script>
+
+<style>
+.v-btn > span {
+	opacity: 1!important;
+}
+</style>

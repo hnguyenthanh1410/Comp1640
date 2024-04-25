@@ -53,6 +53,6 @@ export class User {
   @OneToMany(() => Comment, (comment) => comment.author, { cascade: true })
   ownerComment: Comment[];
 
-  @Column({ type: 'longtext', nullable: true})
-  refreshToken?: string
+  @Column({ type: 'longtext', nullable: true })
+  refreshToken?: string;
 }
