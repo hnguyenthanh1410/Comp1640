@@ -42,6 +42,7 @@
 			<comment-feature
 				:key="key"
 				v-model="form.comment"
+				class="mt-5"
 				:comments="comments"
 				@updateChildComment="(payload) => $emit('updateChildComment', payload)"
 			/>
@@ -89,6 +90,10 @@ export default {
 				{
 					text: 'Not approve',
 					value: 'Not approved'
+				},
+				{
+					text: 'Pending',
+					value: 'Pending'
 				}
 			],
 			status: undefined,

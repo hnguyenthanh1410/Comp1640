@@ -296,14 +296,14 @@ export class ContributionService {
   public async updateContribution(
     payload: UpdateContributionRequest,
     files: Array<Express.Multer.File>,
-    user: User,
+    user: any,
     contribution: GetContributionResponse,
   ) {
     const CurrentUser = await this.userRepository.findOne({
-      where: [{ id: user.id }],
+      where: [{ id: user.sub }],
     });
     if (
-      contribution.author.id === user.id ||
+      contribution.author.id === user.sub ||
       (CurrentUser.role.name === RoleName.MARKETING_COORDINATOR &&
         contribution.faculty.name === CurrentUser.faculty.name)
     ) {

@@ -9,7 +9,7 @@
 		<v-card-title
 			class="black--text text-h3"
 		>
-			<v-row class="mt-6">
+			<v-row class="mt-6" no-gutters>
 				<v-spacer />
 
 				<v-col cols="6" style="text-align: center;">
@@ -33,6 +33,10 @@
 		</v-card-title>
 
 		<post-card :posts="posts" />
+
+		<v-card-actions v-if="$checkRole.isRole(['ADMIN'])" class="d-flex justify-end align-center">
+			Currently {{ title.toLowerCase() }} has {{ posts.length }}
+		</v-card-actions>
 	</v-card>
 </template>
 

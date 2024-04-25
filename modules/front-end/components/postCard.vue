@@ -12,6 +12,9 @@
 			justify-center
 			column
 			class="black--text"
+			:style="{
+				'height': $vuetify.breakpoint.xs ? '40vh' : ($vuetify.breakpoint.mdAndDown ? '35vh' : '80vh')
+			}"
 		>
 			<div class="text-h4 font-weight-bold">
 				No Post
@@ -77,10 +80,9 @@
 					>
 						<v-col :cols="mode === 'viewDetail' ? '3' : '5'">
 							<v-img
-								src="/img/illustration-gallery-icon_53876-27002.png"
+								:src="post.files[0]"
 								contain
 								width="65%"
-								height="100%"
 								class="ma-auto"
 							/>
 						</v-col>

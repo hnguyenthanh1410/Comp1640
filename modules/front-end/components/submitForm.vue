@@ -1,19 +1,15 @@
 <template>
-	<div class="w-100 h-100 d-flex flex-column flex">
-		<div
-			class="black--text mt-10 mb-3 text-h4 font-weight-bold"
-			style="text-align: center;"
-		>
+	<div :key="counter" class="w-100 h-100 d-flex flex-column flex">
+		<div class="black--text mt-10 mb-3 text-h4 font-weight-bold" style="text-align: center;">
 			Upload
 		</div>
 
-		<v-form enctype="multipart/form-data" :disabled="!$checkRole.isRole(['STUDENT']) && !!id" class="align-center d-flex flex-column">
-			<v-row
-				v-for="(header, key) of headers"
-				:key="key"
-				class="w-100 align-center my-13 pr-10"
-				no-gutters
-			>
+		<v-form
+			enctype="multipart/form-data"
+			:disabled="!$checkRole.isRole(['STUDENT']) && !!id"
+			class="align-center d-flex flex-column"
+		>
+			<v-row v-for="(header, key) of headers" :key="key" class="w-100 align-center my-13 pr-10" no-gutters>
 				<v-col cols="2" class="black--text text-h5 font-weight-regular mx-5">
 					{{ header.text }}
 				</v-col>
@@ -28,27 +24,35 @@
 						no-resize
 					/>
 
-					<v-file-input
-						v-else-if="header.type === 'file'"
-						v-model="form[header.value]"
-						outlined
-						filled
-						hide-details
-						prepend-icon=""
-						multiple
-					/>
+					<v-row v-else-if="header.type === 'file'" class="w-100 align-center">
+						<v-col cols="11">
+							<v-file-input
+								v-model="form[header.value]"
+								outlined
+								filled
+								hide-details
+								prepend-icon=""
+								multiple
+							/>
+						</v-col>
+
+						<v-col cols="1">
+							<v-btn
+								v-if="form[header.value].length"
+								target="_black"
+								class="mx-auto"
+								@click="getFile(form[header.value]?.at(0))"
+							>
+								<v-icon>mdi-arrow-down</v-icon>
+							</v-btn>
+						</v-col>
+					</v-row>
 
 					<div v-else-if="header.type === 'slot'" class="black--text text-h5 font-weight-regular">
 						{{ $data[header.value] }}
 					</div>
 
-					<v-text-field
-						v-else
-						v-model="form[header.value]"
-						outlined
-						filled
-						hide-details
-					/>
+					<v-text-field v-else v-model="form[header.value]" outlined filled hide-details />
 				</v-col>
 			</v-row>
 
@@ -63,27 +67,16 @@
 			</v-row>
 		</v-form>
 
-		<v-layout
-			v-if="$checkRole.isRole(['STUDENT'])"
-			class="w-100 my-5"
-			justify-center
-			align-center
-		>
-			<v-btn
-				class="black--text white mx-5"
-				@click="$router.back()"
-			>
+		<v-layout v-if="$checkRole.isRole(['STUDENT'])" class="w-100 my-5" justify-center align-center>
+			<v-btn class="black--text white mx-5" @click="$router.back()">
 				Back
 			</v-btn>
 
-			<v-btn
-				class="black--text white mx-5"
-				@click="id ? update() : create()"
-			>
+			<v-btn class="black--text white mx-5" @click="id ? update() : create()">
 				{{ id ? 'Update' : 'Create' }}
 			</v-btn>
 		</v-layout>
-		
+
 		<extended-feature
 			v-if="$checkRole.isRole(['MARKETING_COORDINATOR'])"
 			v-model="form.extend"
@@ -95,7 +88,7 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import URI from 'urijs';
 
 export default {
 	name: 'SubmitForm',
@@ -156,7 +149,8 @@ export default {
 				}
 			},
 			post: {},
-			childrenComment: []
+			childrenComment: [],
+			counter: 0
 		};
 	},
 	async mounted () {
@@ -175,34 +169,34 @@ export default {
 			const dueDate = new Date(this.post.period?.closureDate);
 			this.form.extend.dueDate = dueDate.toLocaleDateString('en-CA');
 			this.form.extend.status = this.post.status?.name;
+			let files = this.post.files.map(async (file) => await fetch(file).then((r) => r.blob()).then((blob) => new File([blob], this.fileName(file), { type: blob.type })));
+			files = await Promise.all(files);
+			console.log(files);
+			this.form.photos.push(files[0]);
+			this.form.files.push(files[1]);
 
 			this.dueDate = dueDate.toLocaleDateString('en-US');
 		},
 
 		async create () {
-			const extended = _.cloneDeep(this.form.extend);
-			// const docs = this.form.files;
-			// const photos = this.form.photos;
-			// delete this.form.files;
-			// delete this.form.photos;
-
-			Object.keys(this.form.extend).forEach((key) => this.form.extend[key] = undefined);
+			const data = new FormData();
+			this.form.photos.forEach((file) => {
+				data.append('files', file);
+			});
+			this.form.files.forEach((file) => {
+				data.append('files', file);
+			});
+			data.append('name', this.form.name);
+			data.append('description', this.form.description);
 
 			try {
 				await this.$getData.fetch(
 					'http://localhost:8080/contribution/create',
+					data,
+					'post',
 					{
-						...this.form,
-						dueDate: extended.dueDate
-						// files: [
-						// 	...photos,
-						// 	...docs
-						// ]
-					},
-					'post'
-					// {
-					// 	"Content-Type": "multipart/form-data"
-					// }
+						"Content-Type": "multipart/form-data"
+					}
 				);
 
 				this.$router.back();
@@ -212,37 +206,33 @@ export default {
 		},
 
 		async update () {
-			const extended = _.cloneDeep(this.form.extend);
-			// const docs = this.form.files;
-			// const photos = this.form.photos;
-			// delete this.form.files;
-			// delete this.form.photos;
-
-			Object.keys(this.form.extend).forEach((key) => this.form.extend[key] = undefined);
+			const data = new FormData();
+			this.form.photos.forEach((file) => {
+				data.append('files', file);
+			});
+			this.form.files.forEach((file) => {
+				data.append('files', file);
+			});
+			data.append('name', this.form.name);
+			data.append('description', this.form.description);
+			if (this.form.extend.dueDate) data.append('dueDate', this.form.extend.dueDate);
 
 			try {
 				await this.$getData.fetch(
 					'http://localhost:8080/contribution/update/' + this.id,
+					data,
+					'patch',
 					{
-						...this.form,
-						dueDate: extended.dueDate
-						// files: [
-						// 	...photos,
-						// 	...docs
-						// ]
-					},
-					'patch'
-					// {
-					// 	"Content-Type": "multipart/form-data"
-					// }
+						"Content-Type": "multipart/form-data"
+					}
 				);
 
-				if (extended.comment) {
+				if (this.form.extended.comment) {
 					await this.$getData.fetch(
 						'http://localhost:8080/comment/create',
 						{
 							contributionId: this.id,
-							content: extended.comment
+							content: this.form.extended.comment
 						},
 						'post'
 					);
@@ -269,11 +259,23 @@ export default {
 				}
 
 				await this.$store.dispatch('post/getData');
-				this.$nuxt.refresh();
+				this.counter += 1;
 				await this.fetchData();
 			} catch (err) {
 				console.log(err);
 			}
+		},
+
+		fileName (url) {
+			if (url === null || typeof url === 'undefined') return '';
+			const file = new URI(url).filename(); // File name with file extension
+			return file.substring(0, file.lastIndexOf('.')); // Remove the extension
+		},
+
+		getFile (file) {
+			if (!file) return;
+
+			window.open(URL.createObjectURL(file), '_blank');
 		}
 	}
 };

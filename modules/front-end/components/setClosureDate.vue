@@ -6,9 +6,13 @@
 		<template #activator="{ on, attrs }">
 			<v-btn
 				v-bind="attrs"
-				class="font-weight-bold mr-5"
+				class="font-weight-bold closure-btn"
+				:class="$vuetify.breakpoint.mdAndDown ? 'ma-0' : 'mr-5'"
+				:width="$vuetify.breakpoint.mdAndDown ? '80%' : undefined"
+				:height="$vuetify.breakpoint.smAndDown ? '80%' : undefined"
 				dark
 				:ripple="false"
+				style="text-wrap: auto;"
 				v-on="on"
 			>
 				Set Closure Date
@@ -88,3 +92,10 @@ export default {
 	}
 };
 </script>
+
+<style>
+.closure-btn > span {
+	width: 100%;
+	text-wrap: balance;
+}
+</style>
