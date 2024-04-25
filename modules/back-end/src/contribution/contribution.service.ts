@@ -16,6 +16,7 @@ import { UpdateContributionRequest } from './dtos/update.contribution.dto';
 import { GetCommentResponse } from 'src/comment/dtos/create.comment.dto';
 import { Comment } from 'src/comment/entity/comment.entity';
 import { RoleName } from 'src/role/entity/role.entity';
+import { UserFromJwt } from 'src/user/dtos/user.jwt.dto';
 
 @Injectable()
 export class ContributionService {
@@ -245,8 +246,10 @@ export class ContributionService {
   public async createContribution(
     payload: CreateContributionRequest,
     files: Array<Express.Multer.File>,
-    user: User,
+    user: UserFromJwt,
   ): Promise<GetContributionResponse> {
+    console.log(user);
+
     let statusContribution = await this.statusRepository.findOne({
       where: {
         name: 'Pending',
@@ -267,7 +270,7 @@ export class ContributionService {
       },
     });
     const CurrentUser = await this.userRepository.findOne({
-      where: [{ id: user.id }],
+      where: [{ id: user.sub }],
     });
 
     if (files) {
@@ -289,14 +292,14 @@ export class ContributionService {
     await this.sendEmailForCoordinator();
     return {
       ...contribution,
-      faculty: user.faculty,
+      faculty: CurrentUser.faculty,
     };
   }
 
   public async updateContribution(
     payload: UpdateContributionRequest,
     files: Array<Express.Multer.File>,
-    user: any,
+    user: UserFromJwt,
     contribution: GetContributionResponse,
   ) {
     const CurrentUser = await this.userRepository.findOne({
