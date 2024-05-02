@@ -4,9 +4,19 @@
 			Delete contribution
 		</v-card-title>
 		<v-card-text class="pa-3">
+			<v-text-field
+				v-model="search"
+				append-icon="mdi-magnify"
+				label="Search"
+				single-line
+				hide-details
+				class="my-5 px-5"
+			/>
+
 			<v-data-table
 				:headers="headers"
 				:items="posts"
+				:search="search"
 				height="undefined"
 				width="undefined"
 				class="ma-auto w-100 datatable elevation-10 rounded-xxl"
@@ -60,8 +70,8 @@ export default {
 			posts: [],
 			headers: [
 				{
-					text: 'ID',
-					value: 'id',
+					text: 'Name',
+					value: 'name',
 					class: 'rounded-tl-xxl',
 					sortable: false
 				},
@@ -82,7 +92,8 @@ export default {
 					sortable: false
 				}
 			],
-			form: []
+			form: [],
+			search: undefined
 		};
 	},
 	async mounted () {

@@ -177,11 +177,11 @@ export default {
 			const dueDate = new Date(this.post.period?.closureDate);
 			this.form.extend.dueDate = dueDate.toLocaleDateString('en-CA');
 			this.form.extend.status = this.post.status?.name;
-			let files = this.post.files.map(async (file) => await fetch(file).then((r) => r.blob()).then((blob) => new File([blob], this.fileName(file), { type: blob.type })));
+			let files = this.post.files.map(async (file) => await fetch(file).then((r) => r.blob()).catch((err) => console.log(err)).then((blob) => new File([blob], this.fileName(file), { type: blob.type })));
 			files = await Promise.all(files);
 			if (files.length) {
-				this.form.photos.push(files[0]);
-				this.form.files.push(files[1]);
+				this.form.photos = [files[0]];
+				this.form.files = [files[1]];
 			}
 
 			this.dueDate = dueDate.toLocaleDateString('en-US');

@@ -96,7 +96,11 @@
 							>
 								<div>Author: {{ post.author.firstName + ' ' + post.author.lastName }}</div>
 
-								<div>{{ post.description }}</div>
+								<div
+									:style="mode !== 'viewDetail' ? 'text-overflow: ellipsis; height: 80%; overflow: hidden; white-space: nowrap;' : undefined"
+								>
+									{{ post.description }}
+								</div>
 
 								{{ !(post.status.name === 'Not approved' || post.status.name === 'Pending') ? 'Post date:' : 'Due date:' }} {{ post.period ? new Date(post.period?.closureDate).toLocaleDateString('en-GB') : 'No Date' }}
 							</v-layout>
@@ -137,10 +141,10 @@ export default {
 		})
 	},
 	methods: {
-		push (status, id) {
+		push (status, id, period) {
 			if (!status) return;
 
-			if (this.$checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT']) && status !== 'Approved') {
+			if (this.$checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT']) && status !== 'Approved' && new Date(period.finalClosureDate) > new Date()) {
 				this.$router.push('/upload/' + id);
 			} else {
 				this.$router.push('/viewPost/' + id);

@@ -10,9 +10,19 @@
 			</v-card-title>
 
 			<v-card-text class="pa-3">
+				<v-text-field
+					v-model="search"
+					append-icon="mdi-magnify"
+					label="Search"
+					single-line
+					hide-details
+					class="my-5 px-5"
+				/>
+
 				<v-data-table
 					:headers="headers"
 					:items="users"
+					:search="search"
 					height="undefined"
 					width="undefined"
 					class="ma-auto w-100 datatable elevation-10 rounded-xxl"
@@ -36,8 +46,10 @@
 								</v-btn>
 							</template>
 
-							<v-card>
+							<v-card class="d-flex flex-column">
 								<delete-dialog :user="item" @confirmDelete="fetchUser" />
+
+								<edit-role-dialog :user="item" @update="fetchUser" />
 							</v-card>
 						</v-menu>
 					</template>
@@ -64,12 +76,6 @@ export default {
 	data () {
 		return {
 			headers: [
-				{
-					text: 'ID',
-					value: 'id',
-					class: 'rounded-tl-xxl',
-					sortable: false
-				},
 				{
 					text: 'First Name',
 					value: 'firstName',
@@ -106,7 +112,8 @@ export default {
 					class: 'rounded-tr-xxl',
 					sortable: false
 				}
-			]
+			],
+			search: undefined
 		};
 	},
 	computed: {

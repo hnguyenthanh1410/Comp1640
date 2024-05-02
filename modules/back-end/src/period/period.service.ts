@@ -14,4 +14,12 @@ export class PeriodService {
   public async createPeriod(payload: CreatePeriodRequest): Promise<Period> {
     return await this.periodRepository.save(payload);
   }
+
+  public async getPeriod(): Promise<Period> {
+    return await this.periodRepository.findOne({
+		where: {
+			year: new Date().getFullYear().toString()
+		}
+	});
+  }
 }

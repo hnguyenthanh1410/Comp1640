@@ -86,12 +86,6 @@ export default {
 			],
 			tableHeaders: [
 				{
-					text: 'ID',
-					value: 'id',
-					class: 'rounded-tl-lg',
-					sortable: false
-				},
-				{
 					text: 'Student',
 					value: 'student',
 					sortable: false
@@ -178,12 +172,13 @@ export default {
 				plugins: {
 					title: {
 						display: true,
-						text: "Number of contribution per faculty",
-          			},
+						text: "Number of contribution per faculty"
+					}
 				},
 				maintainAspectRatio: false
 			}
 		};
+		// eslint-disable-next-line no-new
 		new Chart(ctx, pieChartData);
 
 		this.rowHeaders.forEach((header, index) => {
@@ -204,14 +199,15 @@ export default {
 					plugins: {
 						title: {
 							display: true,
-							text: "Number of posted contribution in " + this.faculties.find((faculty) => faculty.slug === header.faculty)?.name,
-        	  			},
+							text: "Number of posted contribution in " + this.faculties.find((faculty) => faculty.slug === header.faculty)?.name
+						}
 					},
 					maintainAspectRatio: false
 				}
 			};
 
 			const pie = document.getElementById(header.id);
+			// eslint-disable-next-line no-new
 			new Chart(pie, data);
 		});
 	}

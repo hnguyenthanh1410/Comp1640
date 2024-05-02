@@ -62,6 +62,7 @@
 							</v-layout>
 
 							<v-textarea
+								v-if="comKey + 1 === com.children.length"
 								:value="childrenComment.find((child) => child.id === children.id)?.content"
 								height="10vh"
 								hide-details

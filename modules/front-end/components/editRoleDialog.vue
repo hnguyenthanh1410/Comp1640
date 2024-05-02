@@ -14,21 +14,26 @@
 				:ripple="false"
 				v-on="on"
 			>
-				Delete
+				Edit
 			</v-btn>
 		</template>
 
 		<v-card>
 			<v-card-title class="text-h4 font-weight-regular">
-				Delete
+				Edit
 			</v-card-title>
 
 			<v-card-text class="text-h6 font-weight-regular">
-				Do you want to delete this post
-				<div class="font-weight-bold">
-					{{ post.name }}
-				</div>
-				<div>All the information and file of the following post would be deleted and cannot be recover</div>
+				<v-row class="w-100 align-center">
+					<v-col cols="3">
+						<div>Choose desire role: </div>
+					</v-col>
+					<v-col cols="9">
+						<v-form>
+							<v-select v-model="form" :items="role" />
+						</v-form>
+					</v-col>
+				</v-row>
 			</v-card-text>
 
 			<v-card-actions>
@@ -47,9 +52,9 @@
 					plain
 					text
 					:ripple="false"
-					@click="confirmDelete"
+					@click="confirmUpdate"
 				>
-					Delete
+					Update
 				</v-btn>
 			</v-card-actions>
 		</v-card>
@@ -60,22 +65,34 @@
 export default {
 	name: 'DeleteDialog',
 	props: {
-		post: {
+		user: {
 			type: Object,
 			required: true
 		}
 	},
 	data () {
 		return {
-			isDialog: false
+			isDialog: false,
+			role: [],
+			form: undefined
 		};
 	},
+	async mounted () {
+		this.role = (await this.$getData.fetch('http://localhost:8080/role/list')).map((role) => {
+			return {
+				text: role?.description.toUpperCase(),
+				value: role?.name
+			};
+		});
+		console.log(this.role, this.user);
+	},
 	methods: {
-		async confirmDelete () {
-			await this.$getData.fetch('http://localhost:8080/user/' + this.user.id, {}, 'delete');
-
-			this.$emit('confirmDelete', this.post);
+		async confirmUpdate () {
+			await this.$getData.fetch('http://localhost:8080/user/update-role/' + this.user.id, {
+				roleName: this.form
+			}, 'patch');
 			this.isDialog = false;
+			this.$emit('update');
 		}
 	}
 };

@@ -47,7 +47,7 @@
 				class="transparent text-capitalize text-h6 font-weight-regular"
 				plain
 			>
-				Edit Post
+				Delete Post
 			</v-btn>
 
 			<v-btn

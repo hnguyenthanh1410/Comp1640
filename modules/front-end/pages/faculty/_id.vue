@@ -22,6 +22,7 @@
 						dark
 						:ripple="false"
 						class="mr-5"
+						:disabled="period ? new Date(period.closureDate) < new Date() : true"
 						@click="$router.push('/upload')"
 					>
 						Create
@@ -54,6 +55,7 @@ export default {
 	computed: {
 		...mapFields('faculty', ['faculties']),
 		...mapFields('post', ['posts']),
+		...mapFields('period', ['period']),
 		...mapGetters({
 			getFacultyBySlug: 'faculty/getFacultyBySlug'
 		})
@@ -62,6 +64,8 @@ export default {
 		this.title = this.getFacultyBySlug(this.$route.params.id).name;
 
 		await this.$store.dispatch('post/getData');
+		await this.$store.dispatch('period/getData');
+
 
 		this.loading = true;
 	}

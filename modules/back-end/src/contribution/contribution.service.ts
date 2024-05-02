@@ -101,66 +101,74 @@ export class ContributionService {
 			.orderBy('e.id', 'DESC');
 	}
 
-	private async sendNotifyByEmail(email: string): Promise<object> {
+	private async sendNotifyByEmail(
+		email: string,
+		contributionId: string,
+	  ): Promise<object> {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const nodemailer = require('nodemailer');
 		const transporter = nodemailer.createTransport({
-			service: 'gmail',
-			auth: {
-				user: 'danquene123@gmail.com',
-				pass: 'kccb yxli mhxx jicf',
-			},
-			port: 587,
-			secure: false,
-			requireTLS: true,
+		  service: 'gmail',
+		  auth: {
+			user: 'danquene123@gmail.com',
+			pass: 'kccb yxli mhxx jicf',
+		  },
+		  port: 587,
+		  secure: false,
+		  requireTLS: true,
 		});
 		const contributionLink = 'https://www.google.com/'; //link to detail submission
 		const mailOptions = {
-			from: 'danquene123@gmail.com',
-			to: email,
-			subject: 'Notification: Contribution Ready for Review',
-			text:
-				'Hello Coordinator,\nA new Contribution from a student is ready for review. Please click the link below to check:\n' +
-				contributionLink +
-				'\n\nThank you!',
-			html: `
-              <html>
-                  <head>
-                      <title>Contribution Notification</title>
-                  </head>
-                  <body>
-                      <h1>Contribution Notification</h1>
-                      <p>Hello Coordinator,</p>
-                      <p>A new Contribution from a student is ready for review. Please click the link below to check:</p>
-                      <p><a href="${contributionLink}">Check Contribution</a></p>
-                      <p>Thank you!</p>
-                  </body>
-              </html>
-          `,
+		  from: 'danquene123@gmail.com',
+		  to: email,
+		  subject: 'Notification: Contribution Ready for Review',
+		  text:
+			'Hello Coordinator,\nA new Contribution from a student is ready for review. Please click the link below to check:\n' +
+			contributionLink +
+			'\n\nThank you!',
+		  html: `
+				  <html>
+					  <head>
+						  <title>Contribution Notification</title>
+					  </head>
+					  <body>
+						  <h1>Contribution Notification</h1>
+						  <p>Hello Coordinator,</p>
+						  <p>A new Contribution from a student is ready for review. Please click the link below to check:</p>
+						  <p><a href="${contributionLink}">Check Contribution</a></p>
+						  <p>Thank you!</p>
+					  </body>
+				  </html>
+			  `,
 		};
-
+	
 		try {
-			const info = await transporter.sendMail(mailOptions);
-			return info;
+		  const info = await transporter.sendMail(mailOptions);
+		  return info;
 		} catch (error) {
-			throw new BadRequestException('Error sending email !');
+		  throw new BadRequestException('Error sending email !');
 		}
-	}
-
-	private async sendEmailForCoordinator() {
+	  }
+	
+	  private async sendEmailForCoordinator(
+		contributionId: string,
+		faculty: Faculty,
+	  ) {
 		this.userService.getAllUsers().then(async (accountList) => {
-			const coordinator = accountList.filter(
-				(account) => account.role.name === RoleName.MARKETING_COORDINATOR,
-			);
-			const emailPromises = coordinator.map(async (account) =>
-				this.sendNotifyByEmail(account.email),
-			);
-
-			await Promise.all(emailPromises)
-				.then(() => console.log('Emails sent successfully!'))
-				.catch((error) => console.error('Error sending emails:', error));
+		  const coordinator = accountList.filter(
+			(account) =>
+			  account.role.name == RoleName.MARKETING_COORDINATOR &&
+			  account.faculty?.name == faculty.name,
+		  );
+		  const emailPromises = coordinator.map(async (account) =>
+			this.sendNotifyByEmail(account.email, contributionId),
+		  );
+	
+		  await Promise.all(emailPromises)
+			.then(() => console.log('Emails sent successfully!'))
+			.catch((error) => console.error('Error sending emails:', error));
 		});
-	}
+	  }
 
 	public async getApprovedContributionList() {
 		const contributionList = await this.getContributionBaseQuery()
@@ -271,8 +279,6 @@ export class ContributionService {
 		files: Array<Express.Multer.File>,
 		user: UserFromJwt,
 	): Promise<GetContributionResponse> {
-		console.log(user);
-
 		let statusContribution = await this.statusRepository.findOne({
 			where: {
 				name: 'Pending',
@@ -312,7 +318,7 @@ export class ContributionService {
 		});
 		const contributionId = insertResult.generatedMaps[0].id;
 		const contribution = await this.getContributionDetail(contributionId);
-		await this.sendEmailForCoordinator();
+		await this.sendEmailForCoordinator(contributionId, CurrentUser.faculty);
 		return {
 			...contribution,
 			faculty: CurrentUser.faculty,
