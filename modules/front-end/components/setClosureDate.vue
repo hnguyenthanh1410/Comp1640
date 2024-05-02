@@ -21,20 +21,29 @@
 
 		<v-card>
 			<v-card-title class="text-h4 font-weight-regular">
-				Delete
+				Set Closure Date
 			</v-card-title>
 
 			<v-card-text class="text-h6 font-weight-regular">
 				<v-form v-model="valid">
-					<v-text-field
-						v-for="(header, key) of Object.keys(form)"
+					<v-row
+						v-for="(header, key) of headers"
 						:key="key"
-						v-model="form[header]"
-						type="date"
-						:rules="[
-							(value) => !!value || 'Please select the date'
-						]"
-					/>
+					>
+						<v-col cols="3" class="d-flex align-center">
+							{{ header.text }}
+						</v-col>
+
+						<v-col cols="9">
+							<v-text-field
+								v-model="form[header.value]"
+								type="date"
+								:rules="[
+									(value) => !!value || 'Please select the date'
+								]"
+							/>
+						</v-col>
+					</v-row>
 				</v-form>
 			</v-card-text>
 
@@ -72,7 +81,17 @@ export default {
 				closureDate: '',
 				finalClosureDate: ''
 			},
-			valid: false
+			valid: false,
+			headers: [
+				{
+					text: 'Closure Date',
+					value: 'closureDate'
+				},
+				{
+					text: 'Final Closure Date',
+					value: 'finalClosureDate'
+				}
+			]
 		};
 	},
 	methods: {

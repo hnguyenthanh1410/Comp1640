@@ -19,4 +19,8 @@ export class FacultyService {
   public async getAllFaculties() {
     return await this.getFacultyBaseQuery().getMany();
   }
+
+  public async countFaculties() {
+	return await this.facultyRepository.count();
+  }
 }

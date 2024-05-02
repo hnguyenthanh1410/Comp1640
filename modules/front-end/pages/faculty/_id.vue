@@ -33,10 +33,6 @@
 		</v-card-title>
 
 		<post-card :posts="posts" />
-
-		<v-card-actions v-if="$checkRole.isRole(['ADMIN'])" class="d-flex justify-end align-center">
-			Currently {{ title.toLowerCase() }} has {{ posts.length }}
-		</v-card-actions>
 	</v-card>
 </template>
 

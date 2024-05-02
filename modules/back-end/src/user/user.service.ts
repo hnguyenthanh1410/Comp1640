@@ -6,6 +6,7 @@ import { GetUserResponse } from './dtos/create.user.dto';
 import { RoleService } from 'src/role/role.service';
 import { MediaService } from 'src/media/media.service';
 import { UpdateRoleRequest, UpdateUserRequest } from './dtos/update.role.dto';
+import { RoleName } from 'src/role/entity/role.entity';
 
 @Injectable()
 export class UserService {
@@ -129,5 +130,12 @@ export class UserService {
       throw new BadRequestException('No exist user with the id');
 
     await this.userRepository.remove(existedUser);
+  }
+
+  public async countUser() {
+	return await this.userRepository
+		.createQueryBuilder('e')
+		.andWhere('json_extract(role, "$.name") = :roleName', { roleName: RoleName.STUDENT })
+		.getCount();
   }
 }

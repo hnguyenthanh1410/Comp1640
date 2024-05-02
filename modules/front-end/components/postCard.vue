@@ -83,6 +83,7 @@
 								:src="post.files[0]"
 								contain
 								width="65%"
+								height="100%"
 								class="ma-auto"
 							/>
 						</v-col>
@@ -97,7 +98,7 @@
 
 								<div>{{ post.description }}</div>
 
-								{{ !(post.status.name === 'Not approved') ? 'Post date:' : 'Due date:' }} {{ post.period ? new Date(post.period?.closureDate).toLocaleDateString('en-GB') : 'No Date' }}
+								{{ !(post.status.name === 'Not approved' || post.status.name === 'Pending') ? 'Post date:' : 'Due date:' }} {{ post.period ? new Date(post.period?.closureDate).toLocaleDateString('en-GB') : 'No Date' }}
 							</v-layout>
 						</v-col>
 					</v-row>

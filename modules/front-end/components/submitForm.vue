@@ -33,6 +33,7 @@
 								hide-details
 								prepend-icon=""
 								multiple
+								:accept="header.accept"
 							/>
 						</v-col>
 
@@ -113,17 +114,24 @@ export default {
 				{
 					text: 'File Upload',
 					type: 'file',
-					value: 'files'
+					value: 'files',
+					accept: '.pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 				},
 				{
 					text: 'Photo Upload',
 					type: 'file',
-					value: 'photos'
+					value: 'photos',
+					accept: 'image/*'
 				},
 				{
 					text: 'Due date',
 					type: 'slot',
 					value: 'dueDate'
+				},
+				{
+					text: 'Status',
+					type: 'slot',
+					value: 'status'
 				}
 			],
 			btns: [
@@ -143,14 +151,14 @@ export default {
 				files: [],
 				photos: [],
 				extend: {
-					dueDate: undefined,
 					status: undefined,
 					comment: undefined
 				}
 			},
 			post: {},
 			childrenComment: [],
-			counter: 0
+			counter: 0,
+			status: 'Pending'
 		};
 	},
 	async mounted () {
@@ -171,11 +179,13 @@ export default {
 			this.form.extend.status = this.post.status?.name;
 			let files = this.post.files.map(async (file) => await fetch(file).then((r) => r.blob()).then((blob) => new File([blob], this.fileName(file), { type: blob.type })));
 			files = await Promise.all(files);
-			console.log(files);
-			this.form.photos.push(files[0]);
-			this.form.files.push(files[1]);
+			if (files.length) {
+				this.form.photos.push(files[0]);
+				this.form.files.push(files[1]);
+			}
 
 			this.dueDate = dueDate.toLocaleDateString('en-US');
+			this.status = this.post.status.name;
 		},
 
 		async create () {
@@ -215,24 +225,25 @@ export default {
 			});
 			data.append('name', this.form.name);
 			data.append('description', this.form.description);
-			if (this.form.extend.dueDate) data.append('dueDate', this.form.extend.dueDate);
 
 			try {
-				await this.$getData.fetch(
-					'http://localhost:8080/contribution/update/' + this.id,
-					data,
-					'patch',
-					{
-						"Content-Type": "multipart/form-data"
-					}
-				);
+				if (this.$checkRole.isRole(['STUDENT'])) {
+					await this.$getData.fetch(
+						'http://localhost:8080/contribution/update/' + this.id,
+						data,
+						'patch',
+						{
+							"Content-Type": "multipart/form-data"
+						}
+					);
+				}
 
-				if (this.form.extended.comment) {
+				if (this.form.extend.comment) {
 					await this.$getData.fetch(
 						'http://localhost:8080/comment/create',
 						{
 							contributionId: this.id,
-							content: this.form.extended.comment
+							content: this.form.extend.comment
 						},
 						'post'
 					);
@@ -256,6 +267,16 @@ export default {
 					});
 
 					await Promise.all(promise);
+				}
+
+				if (this.form.extend.status) {
+					this.$getData.fetch(
+						'http://localhost:8080/contribution/set-status/' + this.id,
+						{
+							status: this.form.extend.status
+						},
+						'patch'
+					);
 				}
 
 				await this.$store.dispatch('post/getData');

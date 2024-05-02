@@ -19,7 +19,6 @@ import { CheckRole } from 'src/role/role.decorator';
 import { RoleName } from 'src/role/entity/role.entity';
 import { UpdateRoleRequest, UpdateUserRequest } from '../dtos/update.role.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { User } from '../entity/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 
@@ -38,6 +37,13 @@ export class UserController {
   @UseGuards(AuthGuard('jwtGate'))
   async getUserInfo(@Req() req: Request) {
     return await this.userService.getUserInfo(req.user['username']);
+  }
+
+  @Get('count')
+  @UseGuards(AuthGuardJwt, RoleGuard)
+  @CheckRole(RoleName.ADMIN)
+  async countStudent() {
+	return await this.userService.countUser();
   }
 
   @Get(':id')

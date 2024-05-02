@@ -10,12 +10,15 @@ import {
   UpdateCommentRequest,
 } from './dtos/create.comment.dto';
 import { User } from 'src/user/entity/user.entity';
+import { UserFromJwt } from 'src/user/dtos/user.jwt.dto';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @InjectRepository(Contribution)
     private readonly contributionRepository: Repository<Contribution>,
   ) {}
@@ -69,8 +72,6 @@ export class CommentService {
   public async getComment(id: string) {
     const result = await this.getCommentsBaseQuery()
       .leftJoin('e.author', 'user')
-      .leftJoinAndSelect('e.children', 'children')
-      .leftJoinAndSelect('e.contribution', 'contribution')
       .addSelect([
         'user.id',
         'user.username',
@@ -80,6 +81,8 @@ export class CommentService {
         'user.role',
         'user.faculty',
       ])
+      .leftJoinAndSelect('e.children', 'children')
+      .leftJoinAndSelect('e.contribution', 'contribution')
       .andWhere('e.id = :id', {
         id,
       })
@@ -95,7 +98,7 @@ export class CommentService {
     };
   }
 
-  public async createComment(payload: CreateCommentRequest, user: User) {
+  public async createComment(payload: CreateCommentRequest, user: UserFromJwt) {
     const contribution = await this.getContributionDetailQuery(
       payload.contributionId,
     );
@@ -109,25 +112,30 @@ export class CommentService {
       });
     }
 
+    const CurrentUser = await this.userRepository.findOne({
+      where: [{ id: user.sub }],
+    });
+
     const insertResult = await this.commentRepository.insert({
       content: payload.content,
       createdAt: new Date(),
       updatedAt: new Date(),
       contribution,
       parent: parentComment ?? null,
-      author: user,
+      author: CurrentUser,
     });
 
     const commentId = insertResult.generatedMaps[0].id;
     const createdComment = await this.getComment(commentId);
 
-    const { password, ...info } = user;
+    delete CurrentUser.password;
+
     const comment = {
       id: createdComment.id,
       content: createdComment.content,
       createdAt: createdComment.createdAt,
       updatedAt: createdComment.updatedAt,
-      author: info,
+      author: CurrentUser,
       contributionId: createdComment.contribution.id,
       children: [],
       ...(createdComment.parent && { parentId: createdComment.parent.id }),

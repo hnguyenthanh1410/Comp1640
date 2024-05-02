@@ -27,7 +27,11 @@
 
 			<v-col cols="9" class="black--text d-flex align-center">
 				<v-layout column>
-					<div>{{ com.content }}</div>
+					<v-layout class="mb-3">
+						<div class="font-weight-bold text-capitalize author">
+							{{ com.author?.firstName+ ' ' + com.author?.lastName }}
+						</div>: {{ com.content }}
+					</v-layout>
 
 					<v-row no-gutters>
 						<v-spacer />
@@ -51,7 +55,11 @@
 						<v-spacer />
 
 						<v-col cols="11">
-							{{ children.content }}
+							<v-layout class="mb-3">
+								<div class="font-weight-bold text-capitalize author">
+									{{ children.author?.firstName+ ' ' + children.author?.lastName }}
+								</div>: {{ children.content }}
+							</v-layout>
 
 							<v-textarea
 								:value="childrenComment.find((child) => child.id === children.id)?.content"
@@ -136,3 +144,9 @@ export default {
 	}
 };
 </script>
+
+<style scoped>
+.author {
+	border: 1.5px solid rgb(148, 148, 148);
+}
+</style>

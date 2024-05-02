@@ -30,11 +30,11 @@ module.exports = {
 		'no-empty': ['warn'],
 		'no-lonely-if': ['off'],
 		'arrow-parens': ['off'],
-		'curly': ['error', 'multi-line'],
+		curly: ['error', 'multi-line'],
 		'no-unused-expressions': ['off'],
-		'quotes': ['off'],
+		quotes: ['off'],
 		'no-useless-escape': ['off'],
 		'no-return-assign': ['off'],
-		'no-unused-vars': ["error", { "destructuredArrayIgnorePattern": "^_" }]
+		'no-unused-vars': ["error", { destructuredArrayIgnorePattern: "^_" }]
 	}
 };

@@ -45,8 +45,8 @@ export default {
 	name: 'IndexPage',
 	auth: 'guest',
 	middleware ({ store, redirect, $checkRole }) {
-		if (store.state.user.guestState || $checkRole.isRole(['MARKETING_MANAGER', 'ADMIN'])) redirect('/faculty/' + store.state.faculty.faculties[0].slug);
-		if ($checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT'])) redirect('/faculty/' + store.state.auth.user.faculty.slug);
+		if (store.state.user.guestState || $checkRole.isRole(['MARKETING_MANAGER', 'ADMIN'])) redirect('/faculty/' + store.state.faculty.faculties[0]?.slug);
+		if ($checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT'])) redirect('/faculty/' + store.state.auth.user.faculty?.slug);
 	},
 	data () {
 		return {

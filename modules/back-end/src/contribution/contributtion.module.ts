@@ -12,6 +12,7 @@ import { FirebaseService } from 'src/firebase/firebase.service';
 import { UserService } from 'src/user/user.service';
 import { RoleService } from 'src/role/role.service';
 import { Comment } from 'src/comment/entity/comment.entity';
+import { Faculty } from 'src/faculty/entity/faculty.entity';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { Comment } from 'src/comment/entity/comment.entity';
       User,
       Role,
       Comment,
+	  Faculty
     ]),
   ],
   controllers: [ContributionController],

@@ -5,43 +5,48 @@
 				'index-card': $vuetify.breakpoint.mdAndDown
 			}"
 		>
-			<v-data-table
-				
-				:headers="headers"
-				:items="users"
-				height="undefined"
-				width="undefined"
-				class="ma-auto w-100 datatable elevation-10"
-				fixed-header
-			>
-				<template #[`item.role`]="{ value }">
-					{{ value.description }}
-				</template>
+			<v-card-title style="text-align: center;" class="text-h3 font-weight-regular">
+				User
+			</v-card-title>
 
-				<template #[`item.slot`]="{ item }">
-					<v-menu>
-						<template #activator="{ on, attrs }">
-							<v-btn
-								v-bind="attrs"
-								color="black"
-								text
-								plain
-								v-on="on"
-							>
-								<v-icon>mdi-dots-horizontal</v-icon>
-							</v-btn>
-						</template>
+			<v-card-text class="pa-3">
+				<v-data-table
+					:headers="headers"
+					:items="users"
+					height="undefined"
+					width="undefined"
+					class="ma-auto w-100 datatable elevation-10 rounded-xxl"
+					fixed-header
+				>
+					<template #[`item.role`]="{ value }">
+						{{ value.description }}
+					</template>
 
-						<v-card>
-							<delete-dialog :user="item" @confirmDelete="fetchUser" />
-						</v-card>
-					</v-menu>
-				</template>
+					<template #[`item.slot`]="{ item }">
+						<v-menu>
+							<template #activator="{ on, attrs }">
+								<v-btn
+									v-bind="attrs"
+									color="black"
+									text
+									plain
+									v-on="on"
+								>
+									<v-icon>mdi-dots-horizontal</v-icon>
+								</v-btn>
+							</template>
 
-				<template #[`item.faculty`]="{ value }">
-					{{ value?.name }}
-				</template>
-			</v-data-table>
+							<v-card>
+								<delete-dialog :user="item" @confirmDelete="fetchUser" />
+							</v-card>
+						</v-menu>
+					</template>
+
+					<template #[`item.faculty`]="{ value }">
+						{{ value?.name }}
+					</template>
+				</v-data-table>
+			</v-card-text>
 		</index-card>
 	</v-layout>
 </template>
@@ -62,7 +67,7 @@ export default {
 				{
 					text: 'ID',
 					value: 'id',
-					class: 'rounded-xl',
+					class: 'rounded-tl-xxl',
 					sortable: false
 				},
 				{
@@ -98,7 +103,7 @@ export default {
 				{
 					text: 'Actions',
 					value: 'slot',
-					class: 'rounded-xl',
+					class: 'rounded-tr-xxl',
 					sortable: false
 				}
 			]

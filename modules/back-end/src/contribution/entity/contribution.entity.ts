@@ -19,7 +19,7 @@ export class Contribution {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ type: 'longtext' })
   description: string;
 
   @Column()

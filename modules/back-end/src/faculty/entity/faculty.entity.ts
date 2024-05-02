@@ -9,7 +9,7 @@ export class Faculty {
   @Column({ unique: true })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @OneToMany(() => User, (user) => user.faculty)

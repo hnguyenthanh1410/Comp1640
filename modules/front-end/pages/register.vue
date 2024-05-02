@@ -1,7 +1,7 @@
 <template>
 	<index-card width="40vw" height="70vh" index-class="ma-auto align-self-center">
 		<v-card-title class="black--text text-h4 font-weight-bold mb-3">
-			Sign In
+			Sign Up
 		</v-card-title>
 
 		<v-card-text class="d-flex h-75">

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -20,6 +21,8 @@ import { CurrentUser } from 'src/auth/current-user.decorator';
 import { User } from 'src/user/entity/user.entity';
 import { ApiParam } from '@nestjs/swagger';
 import { UpdateContributionRequest } from '../dtos/update.contribution.dto';
+import { UpdateStatusRequest } from '../dtos/update.status.contribution.dto';
+import { deleteContributionRequest } from '../dtos/delete.contribution.dto';
 
 @Controller('contribution')
 export class ContributionController {
@@ -120,15 +123,42 @@ export class ContributionController {
     );
   }
 
-  @Patch('/approve/:id')
+  @Patch('/set-status/:id')
   @ApiParam({
     name: 'id',
   })
   @UseGuards(AuthGuardJwt, RoleGuard)
   @CheckRole(RoleName.MARKETING_COORDINATOR)
-  async approveSubmission(@Param('id') id) {
+  async setStatusOrApproveIfNoStatusPassed(
+    @Param('id') id,
+    @Body() payload: UpdateStatusRequest,
+  ) {
     const contribution =
       await this.contributionService.getContributionDetail(id);
-    return await this.contributionService.approveContribution(contribution);
+    return await this.contributionService.setStatus(contribution, payload);
+  }
+
+  @Delete('/delete')
+  @UseGuards(AuthGuardJwt, RoleGuard)
+  @CheckRole(
+	RoleName.MARKETING_MANAGER,
+	RoleName.ADMIN
+  )
+  async deleteContribution (@Body() payload: deleteContributionRequest) {
+	await this.contributionService.deleteContribution(payload )
+  }
+
+  @Get('/count')
+  @UseGuards(AuthGuardJwt, RoleGuard)
+  @CheckRole(RoleName.ADMIN)
+  async countContribution () {
+	return await this.contributionService.countContribution();
+  }
+
+  @Get('/count-contribution-per-user')
+  @UseGuards(AuthGuardJwt, RoleGuard)
+  @CheckRole(RoleName.ADMIN)
+  async countContributionPerUser () {
+	return await this.contributionService.countPostPerUser();
   }
 }

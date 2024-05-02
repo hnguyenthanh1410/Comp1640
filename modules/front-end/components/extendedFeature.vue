@@ -5,24 +5,6 @@
 		<v-form>
 			<v-row>
 				<v-col cols="3" class="black--text d-flex align-center text-h5 font-weight-regular">
-					Due Date:
-				</v-col>
-
-				<v-col cols="4">
-					<v-text-field
-						v-model="form.dueDate"
-						type="date"
-						hide-details
-						solo
-						flat
-						outlined
-						class="my-auto"
-					/>
-				</v-col>
-			</v-row>
-
-			<v-row>
-				<v-col cols="3" class="black--text d-flex align-center text-h5 font-weight-regular">
 					Status:
 				</v-col>
 
@@ -81,7 +63,6 @@ export default {
 	},
 	data () {
 		return {
-			dueDate: undefined,
 			headers: [
 				{
 					text: 'Approve',
@@ -98,7 +79,6 @@ export default {
 			],
 			status: undefined,
 			form: {
-				dueDate: undefined,
 				status: undefined,
 				comment: undefined
 			},
@@ -109,7 +89,6 @@ export default {
 		post: {
 			deep: true,
 			handler () {
-				this.form.dueDate = new Date(this.post.period?.closureDate).toLocaleDateString('en-CA');
 				this.form.status = this.post.status?.name;
 			}
 		},
