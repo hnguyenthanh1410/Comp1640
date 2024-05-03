@@ -16,7 +16,7 @@
 				src="/img/logo.png"
 				width="100%"
 				contain
-				max-height="55%"
+				max-height="50%"
 				class="mb-3"
 			/>
 
