@@ -66,6 +66,7 @@ import FileSaver from 'file-saver';
 
 export default {
 	name: 'DownloadPage',
+	layout: 'post',
 	data () {
 		return {
 			posts: [],

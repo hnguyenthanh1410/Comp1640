@@ -68,6 +68,7 @@ import { mapFields } from "vuex-map-fields";
 
 export default {
 	name: "UserPage",
+	layout: 'post',
 	middleware ({ $checkRole, redirect }) {
 		if (!$checkRole.isRole(['ADMIN'])) {
 			redirect('/');
