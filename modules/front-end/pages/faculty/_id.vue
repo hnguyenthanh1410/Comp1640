@@ -66,7 +66,6 @@ export default {
 		await this.$store.dispatch('post/getData');
 		await this.$store.dispatch('period/getData');
 
-
 		this.loading = true;
 	}
 };

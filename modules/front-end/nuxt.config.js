@@ -74,7 +74,7 @@ export default {
 					property: 'accessToken',
 					data: 'accessToken',
 					type: 'Bearer',
-					maxAge: 30
+					maxAge: 60 * 60
 				},
 				refreshToken: {
 					data: 'refreshToken',
@@ -85,7 +85,8 @@ export default {
 				},
 				user: {
 					property: false
-				}
+				},
+				autoLogout: true
 			}
 		},
 		resetOnError: true,

@@ -72,7 +72,7 @@ export default {
 	},
 	methods: {
 		async confirmDelete () {
-			await this.$getData.fetch('http://localhost:8080/user/' + this.user.id, {}, 'delete');
+			await this.$getData.fetch('http://localhost:8080/contribution/' + this.post.id, {}, 'delete');
 
 			this.$emit('confirmDelete', this.post);
 			this.isDialog = false;

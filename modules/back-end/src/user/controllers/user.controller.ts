@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Req,
   UploadedFile,
   UseGuards,
@@ -21,6 +22,7 @@ import { UpdateRoleRequest, UpdateUserRequest } from '../dtos/update.role.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { GetUserRequest } from '../dtos/getUserRequest.dto';
 
 @Controller('user')
 export class UserController {

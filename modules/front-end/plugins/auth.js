@@ -5,9 +5,9 @@ export default ({ $auth, $checkRole }) => {
 		} else if ($checkRole.isRole(['STUDENT', 'MARKETING_COORDINATOR'])) {
 			return `/faculty/${$auth.user.faculty?.slug || 'marketing'}`;
 		} else if ($checkRole.isRole(['ADMIN'])) {
-			return '/analytics'
+			return '/analytics';
 		} else {
-			return '/faculty/marketing'
+			return '/faculty/marketing';
 		}
 	});
 };

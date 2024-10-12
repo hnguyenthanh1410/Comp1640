@@ -135,7 +135,7 @@ export class UserService {
   public async countUser() {
 	return await this.userRepository
 		.createQueryBuilder('e')
-		.andWhere('json_extract(role, "$.name") = :roleName', { roleName: RoleName.STUDENT })
+		.where('json_extract(role, "$.name") = :roleName', { roleName: RoleName.STUDENT })
 		.getCount();
   }
 }

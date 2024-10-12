@@ -280,10 +280,21 @@ export default {
 				}
 
 				await this.$store.dispatch('post/getData');
-				this.counter += 1;
-				await this.fetchData();
 			} catch (err) {
 				console.log(err);
+			} finally {
+				this.counter += 1;
+				await this.fetchData();
+				this.form = {
+					name: '',
+					description: '',
+					files: [],
+					photos: [],
+					extend: {
+						status: undefined,
+						comment: undefined
+					}
+				};
 			}
 		},
 

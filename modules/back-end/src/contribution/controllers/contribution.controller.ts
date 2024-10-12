@@ -23,6 +23,7 @@ import { ApiParam } from '@nestjs/swagger';
 import { UpdateContributionRequest } from '../dtos/update.contribution.dto';
 import { UpdateStatusRequest } from '../dtos/update.status.contribution.dto';
 import { deleteContributionRequest } from '../dtos/delete.contribution.dto';
+import { GetContributionRequest } from '../dtos/getContribution.dto';
 
 @Controller('contribution')
 export class ContributionController {
@@ -148,17 +149,17 @@ export class ContributionController {
 	await this.contributionService.deleteContribution(payload )
   }
 
-  @Get('/count')
+  @Post('/count')
   @UseGuards(AuthGuardJwt, RoleGuard)
   @CheckRole(RoleName.ADMIN)
-  async countContribution () {
-	return await this.contributionService.countContribution();
+  async countContribution (@Body() payload: GetContributionRequest) {
+	return await this.contributionService.countContribution(payload);
   }
 
-  @Get('/count-contribution-per-user')
+  @Post('/count-contribution-per-user')
   @UseGuards(AuthGuardJwt, RoleGuard)
   @CheckRole(RoleName.ADMIN)
-  async countContributionPerUser () {
-	return await this.contributionService.countPostPerUser();
+  async countContributionPerUser (@Body() payload: GetContributionRequest) {
+	return await this.contributionService.countPostPerUser(payload);
   }
 }

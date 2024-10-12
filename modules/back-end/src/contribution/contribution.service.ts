@@ -2,7 +2,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Contribution } from './entity/contribution.entity';
-import { And, Any, Equal, IsNull, Not, Repository } from 'typeorm';
+import { And, ArrayContains, Equal, IsNull, LessThanOrEqual, MoreThanOrEqual, Not, Or, Raw, Repository } from 'typeorm';
 import { MediaService } from 'src/media/media.service';
 import { UserService } from 'src/user/user.service';
 import { Period } from 'src/period/entity/period.entity';
@@ -20,6 +20,7 @@ import { UserFromJwt } from 'src/user/dtos/user.jwt.dto';
 import { UpdateStatusRequest } from './dtos/update.status.contribution.dto';
 import { deleteContributionRequest } from './dtos/delete.contribution.dto';
 import { Faculty } from 'src/faculty/entity/faculty.entity';
+import { GetContributionRequest } from './dtos/getContribution.dto';
 
 @Injectable()
 export class ContributionService {
@@ -104,29 +105,29 @@ export class ContributionService {
 	private async sendNotifyByEmail(
 		email: string,
 		contributionId: string,
-	  ): Promise<object> {
+	): Promise<object> {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const nodemailer = require('nodemailer');
 		const transporter = nodemailer.createTransport({
-		  service: 'gmail',
-		  auth: {
-			user: 'danquene123@gmail.com',
-			pass: 'kccb yxli mhxx jicf',
-		  },
-		  port: 587,
-		  secure: false,
-		  requireTLS: true,
+			service: 'gmail',
+			auth: {
+				user: 'danquene123@gmail.com',
+				pass: 'kccb yxli mhxx jicf',
+			},
+			port: 587,
+			secure: false,
+			requireTLS: true,
 		});
 		const contributionLink = 'https://www.google.com/'; //link to detail submission
 		const mailOptions = {
-		  from: 'danquene123@gmail.com',
-		  to: email,
-		  subject: 'Notification: Contribution Ready for Review',
-		  text:
-			'Hello Coordinator,\nA new Contribution from a student is ready for review. Please click the link below to check:\n' +
-			contributionLink +
-			'\n\nThank you!',
-		  html: `
+			from: 'danquene123@gmail.com',
+			to: email,
+			subject: 'Notification: Contribution Ready for Review',
+			text:
+				'Hello Coordinator,\nA new Contribution from a student is ready for review. Please click the link below to check:\n' +
+				contributionLink +
+				'\n\nThank you!',
+			html: `
 				  <html>
 					  <head>
 						  <title>Contribution Notification</title>
@@ -141,34 +142,34 @@ export class ContributionService {
 				  </html>
 			  `,
 		};
-	
+
 		try {
-		  const info = await transporter.sendMail(mailOptions);
-		  return info;
+			const info = await transporter.sendMail(mailOptions);
+			return info;
 		} catch (error) {
-		  throw new BadRequestException('Error sending email !');
+			throw new BadRequestException('Error sending email !');
 		}
-	  }
-	
-	  private async sendEmailForCoordinator(
+	}
+
+	private async sendEmailForCoordinator(
 		contributionId: string,
 		faculty: Faculty,
-	  ) {
+	) {
 		this.userService.getAllUsers().then(async (accountList) => {
-		  const coordinator = accountList.filter(
-			(account) =>
-			  account.role.name == RoleName.MARKETING_COORDINATOR &&
-			  account.faculty?.name == faculty.name,
-		  );
-		  const emailPromises = coordinator.map(async (account) =>
-			this.sendNotifyByEmail(account.email, contributionId),
-		  );
-	
-		  await Promise.all(emailPromises)
-			.then(() => console.log('Emails sent successfully!'))
-			.catch((error) => console.error('Error sending emails:', error));
+			const coordinator = accountList.filter(
+				(account) =>
+					account.role.name == RoleName.MARKETING_COORDINATOR &&
+					account.faculty?.name == faculty.name,
+			);
+			const emailPromises = coordinator.map(async (account) =>
+				this.sendNotifyByEmail(account.email, contributionId),
+			);
+
+			await Promise.all(emailPromises)
+				.then(() => console.log('Emails sent successfully!'))
+				.catch((error) => console.error('Error sending emails:', error));
 		});
-	  }
+	}
 
 	public async getApprovedContributionList() {
 		const contributionList = await this.getContributionBaseQuery()
@@ -381,34 +382,67 @@ export class ContributionService {
 	}
 
 	public async deleteContribution(payload: deleteContributionRequest) {
+		const { comments, ...info } = await this.contributionRepository.findOneOrFail({
+			relations: ['comments'],
+			where: {
+				id: payload.id
+			}
+		});
+
+		if (comments.length) {
+			const promises = comments.map(async (comment) => {
+				const c = await this.commentRepository.findOneOrFail({
+					relations: {
+						children: true
+					},
+					where: {
+						id: comment.id
+					}
+				})
+				
+				if (c.children.length) {
+					const promises = c.children.map((children) => this.commentRepository.delete({id: children.id}))
+					await Promise.all(promises)
+				}
+
+				return await this.commentRepository.delete({
+					id: comment.id
+				})
+			})
+
+			await Promise.all(promises);
+		}
+		
 		await this.contributionRepository.delete({
 			id: payload.id
 		})
 	};
 
-	public async countContribution() {
+	public async countContribution(payload: GetContributionRequest) {
 		const faculties = await this.facultyRepository.find();
-
-		const promises = faculties.map(async (faculty) => {
+		
+		const promises = faculties.map(async (faculty) => {	
 			const length = await this.contributionRepository
 				.createQueryBuilder('e')
-				.leftJoin('e.author','user')
-				.addSelect('user.faculty')
-				.andWhere('json_extract(faculty, "$.slug") = :slug', { slug: faculty.slug })
+				.innerJoinAndSelect('e.author', 'author')
+				.where('json_extract(faculty, "$.slug") = :slug', { slug: faculty.slug })
+				.andWhere(`e.createdAt >= :from AND e.createdAt <= :to`, { from: payload.from, to: payload.to })
 				.getCount();
 
 			const approved = await this.contributionRepository
 				.createQueryBuilder('e')
-				.leftJoin('e.author','user')
-				.addSelect('user.faculty')
-				.andWhere('json_extract(faculty, "$.slug") = :slug AND json_extract(status, "$.name") = "Approved"', { slug: faculty.slug })
+				.innerJoinAndSelect('e.author', 'author')
+				.where('json_extract(faculty, "$.slug") = :slug', { slug: faculty.slug })
+				.andWhere(`e.createdAt >= :from AND e.createdAt <= :to`, { from: payload.from, to: payload.to })
+				.andWhere('json_extract(status, "$.name") = "Approved"')
 				.getCount();
 
 			const nonApproved = await this.contributionRepository
 				.createQueryBuilder('e')
-				.leftJoin('e.author','user')
-				.addSelect('user.faculty')
-				.andWhere('json_extract(faculty, "$.slug") = :slug AND json_extract(status, "$.name") != "Approved"', { slug: faculty.slug })
+				.innerJoinAndSelect('e.author', 'author')
+				.where('json_extract(faculty, "$.slug") = :slug', { slug: faculty.slug })
+				.andWhere(`e.createdAt >= :from AND e.createdAt <= :to`, { from: payload.from, to: payload.to })
+				.andWhere('json_extract(status, "$.name") != "Approved"')
 				.getCount();
 
 			return {
@@ -419,32 +453,63 @@ export class ContributionService {
 				}
 			}
 		})
-		
+		const total = {
+			length: [],
+			artical: []
+		};
+
+		(await this.contributionRepository.find({
+			relations: ['author.faculty'],
+			where: {
+				author: {
+					faculty: {
+						slug: Not(IsNull())
+					}
+				},
+				createdAt: And(MoreThanOrEqual(payload.from), LessThanOrEqual(payload.to))
+			},
+			order: {
+				createdAt: 'asc'
+			}
+		})).forEach((header) => {
+			if (!total.length.length || total.length.find((date) => Object.keys(date)[0] !== getDate(header.createdAt))) {
+				total.length.push({
+					[getDate(header.createdAt)]: 1
+				})
+			} else {
+				const index = total.length.findIndex(date => Object.keys(date)[0] === getDate(header.createdAt));
+				total.length[index][getDate(header.createdAt)] += 1;
+			}
+			if (header.status.name === "Approved") {
+				if (!total.artical.length || total.artical.find((date) => Object.keys(date)[0] !== getDate(header.createdAt))) {
+					total.artical.push({
+						[getDate(header.createdAt)]: 1
+					})
+				} else {
+					const index = total.artical.findIndex(date => Object.keys(date)[0] === getDate(header.createdAt));
+					total.artical[index][getDate(header.createdAt)] += 1;
+				}
+			}
+		})
 
 		return {
-			total: await this.contributionRepository.count({
-				relations: ['author.faculty'],
-				where: {
-					author: {
-						faculty: {
-							slug: Not(IsNull())
-						}
-					}
-				}
-			}),
+			total,
 			numOfPostPerFaculty: await Promise.all(promises)
 		}
 	}
 
-	public async countPostPerUser () {
+	public async countPostPerUser(payload: GetContributionRequest) {
 		const users = await this.userRepository
 			.createQueryBuilder('e')
 			.leftJoin('e.role', 'role')
 			.addSelect('role.name')
-			.andWhere('json_extract(role, "$.name") = :name', { name: RoleName.STUDENT })
+			.where('json_extract(role, "$.name") = :name', { name: RoleName.STUDENT })
 			.getMany();
 		const contributions = await this.contributionRepository.find({
-			relations: ['author']
+			relations: ['author'],
+			where: {
+				createdAt: And(MoreThanOrEqual(payload.from), LessThanOrEqual(payload.to))
+			}
 		});
 
 		const unfilterUser = users.map((user) => {
@@ -452,7 +517,7 @@ export class ContributionService {
 				id: user.id,
 				firstName: user.firstName,
 				lastName: user.lastName,
-				contribution: contributions.reduce((previousValue, currentValue) =>{
+				contribution: contributions.reduce((previousValue, currentValue) => {
 					if (currentValue.author?.id === user.id) return previousValue += 1;
 					return previousValue
 				}, 0)
@@ -461,4 +526,12 @@ export class ContributionService {
 
 		return unfilterUser.filter((user) => !!user.contribution)
 	}
+}
+
+function getDate(date: Date) {
+	return [
+		date.getDate().toString().padStart(2, "0"),
+		(date.getMonth() + 1).toString().padStart(2, "0"),
+		date.getFullYear()
+	].join("-");
 }
