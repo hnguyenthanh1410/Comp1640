@@ -139,10 +139,7 @@ export default {
 	mounted () {
 		if (!this.value) return;
 
-		this.dates =  this.value
-
-		console.log(this.currentDate);
-		
+		this.dates =  this.value;
 	}
 };
 </script>
