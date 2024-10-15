@@ -5,8 +5,10 @@
 				'index-card': $vuetify.breakpoint.mdAndDown
 			}"
 		>
-			<v-card-title style="text-align: center;" class="text-h3 font-weight-regular">
+			<v-card-title style="text-align: center;" class="text-h3 font-weight-regular d-flex flex-column w-100 justify-center">
 				User
+
+				<dialog-create-user @submit="createUser"/>
 			</v-card-title>
 
 			<v-card-text class="pa-3">
@@ -126,6 +128,15 @@ export default {
 	methods: {
 		async fetchUser () {
 			await this.$store.dispatch('user/getData');
+		},
+		async createUser (user) {
+			try {
+				await this.$getData.fetch("http://localhost:8080/auth/create-user",{ data: user }, 'post');
+
+				await this.fetchUser()
+			} catch (err) {
+				console.log(err);
+			}
 		}
 	}
 };

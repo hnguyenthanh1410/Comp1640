@@ -80,8 +80,7 @@ export default {
 					data: 'refreshToken',
 					property: 'refreshToken',
 					type: 'Bearer',
-					maxAge: 60 * 60 * 3,
-					tokenRequired: true
+					maxAge: 60 * 60 * 3
 				},
 				user: {
 					property: false
@@ -89,7 +88,6 @@ export default {
 				autoLogout: true
 			}
 		},
-		resetOnError: true,
 		redirect: {
 			login: '/login',
 			logout: '/'

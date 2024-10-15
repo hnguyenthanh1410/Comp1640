@@ -19,9 +19,9 @@ import { Faculty } from 'src/faculty/entity/faculty.entity';
 import { Role, RoleName } from 'src/role/entity/role.entity';
 import { SignInRequest } from 'src/user/dtos/signIn.dto';
 
+let codeVerify: number;
 @Injectable()
 export class AuthService {
-  private codeVerify: number;
   private emailUser: string;
   constructor(
     private readonly jwtService: JwtService,
@@ -123,7 +123,7 @@ export class AuthService {
       });
 
       user.role = role;
-      if (role.name !== RoleName.MARKETING_COORDINATOR)
+      if (role.name === RoleName.MARKETING_MANAGER || role.name === RoleName.ADMIN)
         user.faculty = undefined;
     }
 
@@ -186,7 +186,7 @@ export class AuthService {
     return tokens;
   }
 
-  public async sendCodeResetPassword(email: string): Promise<object> {
+  public async sendCodeResetPassword(email: string) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const nodemailer = require('nodemailer');
     const account = await this.userService.getUserByEmail(email);
@@ -205,25 +205,26 @@ export class AuthService {
       requireTLS: true,
     });
 
-    this.codeVerify = Math.floor(Math.random() * 900000) + 100000;
+    codeVerify = Math.floor(Math.random() * 900000) + 100000;
     const mailOptions = {
       from: 'danquene123@gmail.com',
       to: email,
       subject: 'Sending a code for user',
       text: 'New message',
-      html: `<p style="font-size: '20px'; font-weight: 600">Your code is: ${this.codeVerify}</p>`,
+      html: `<p style="font-size: '20px'; font-weight: 600">Your code is: ${codeVerify}</p>`,
     };
 
     try {
       const info = await transporter.sendMail(mailOptions);
-      return info;
     } catch (error) {
       throw new BadRequestException('Error sending email !');
     }
   }
 
   public checkCodeVerify(code: number): boolean {
-    if (code !== this.codeVerify)
+	console.log(code, codeVerify);
+	
+    if (code !== codeVerify)
       throw new BadRequestException('The code is not valid !');
 
     return true;

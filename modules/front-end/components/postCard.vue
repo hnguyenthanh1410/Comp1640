@@ -35,11 +35,9 @@
 				:key="key"
 				:width="width"
 				:height="height"
-				
 				class="d-flex flex-column"
 				:class="{
-					'my-5': posts.length !== key + 1 && mode !== 'viewDetail',
-					'mt-5': posts.length === key + 1 && mode !== 'viewDetail'
+					'my-5': mode !== 'viewDetail'
 				}"
 				:ripple="false"
 				@click="push(post.status?.name, post.id, post.period)"
@@ -97,9 +95,15 @@
 								<div>Author: {{ post.author.firstName + ' ' + post.author.lastName }}</div>
 
 								<div
-									:style="mode !== 'viewDetail' ? 'text-overflow: ellipsis; height: 80%; overflow: hidden; white-space: nowrap;' : undefined"
+									:class="{
+										'wrap': mode !== 'viewDetail'
+									}"
 								>
 									{{ post.description }}
+								</div>
+
+								<div>
+									Status: {{ post.status.name }}
 								</div>
 
 								{{ !(post.status.name === 'Not approved' || post.status.name === 'Pending') ? 'Post date:' : 'Due date:' }} {{ post.period ? new Date(post.period?.closureDate).toLocaleDateString('en-GB') : 'No Date' }}
@@ -153,3 +157,18 @@ export default {
 	}
 };
 </script>
+
+<style>
+.wrap {
+	display: -webkit-box;
+  -webkit-box-orient: vertical;
+  width: 100%; /* ensure the element takes up the full width */
+  max-width: 100%; /* adjust the width as needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 4; /* limit to 3 lines */
+  max-height: calc(4 * 1.2em); /* adjust based on line height (1.2em is an example) */
+  line-height: 1.2em; /* set line height */
+  word-break: normal; /* prevent breaking words */
+}
+</style>

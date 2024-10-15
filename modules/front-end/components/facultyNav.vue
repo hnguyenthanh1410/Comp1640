@@ -49,18 +49,6 @@
 			>
 				Delete Post
 			</v-btn>
-
-			<v-btn
-				v-if="$checkRole.isRole(['ADMIN'])"
-				color="black"
-				:ripple="false"
-				to="/analytics"
-				text
-				class="transparent text-capitalize text-h6 font-weight-regular"
-				plain
-			>
-				Analytics
-			</v-btn>
 		</div>
 	</client-only>
 </template>

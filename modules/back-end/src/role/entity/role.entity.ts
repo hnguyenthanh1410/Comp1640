@@ -6,7 +6,7 @@ export enum RoleName {
   MARKETING_COORDINATOR = 2,
   MARKETING_MANAGER = 3,
   STUDENT = 4,
-  GUEST,
+  GUEST = 5,
 }
 
 export const ROLES_KEY = 'roles';

@@ -471,8 +471,8 @@ export class ContributionService {
 			order: {
 				createdAt: 'asc'
 			}
-		})).forEach((header) => {
-			if (!total.length.length || total.length.find((date) => Object.keys(date)[0] !== getDate(header.createdAt))) {
+		})).forEach((header) => {			
+			if (!total.length.length || !total.length.find((date) => Object.keys(date)[0] === getDate(header.createdAt))) {
 				total.length.push({
 					[getDate(header.createdAt)]: 1
 				})
@@ -481,7 +481,7 @@ export class ContributionService {
 				total.length[index][getDate(header.createdAt)] += 1;
 			}
 			if (header.status.name === "Approved") {
-				if (!total.artical.length || total.artical.find((date) => Object.keys(date)[0] !== getDate(header.createdAt))) {
+				if (!total.artical.length || !total.artical.find((date) => Object.keys(date)[0] === getDate(header.createdAt))) {
 					total.artical.push({
 						[getDate(header.createdAt)]: 1
 					})

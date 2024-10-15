@@ -22,6 +22,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from 'src/role/role.guard';
 import { CheckRole } from 'src/role/role.decorator';
 import { RoleName } from 'src/role/entity/role.entity';
+import { AuthGuardRefreshJwt } from '../refresh.jwt.guard';
+import { CurrentUser } from '../current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -70,7 +72,7 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  @UseGuards(AuthGuard('jwt-refresh'))
+  @UseGuards(AuthGuardRefreshJwt)
   async refreshToken(@Req() req: Request) {
     return this.authService.refreshToken(
       req.user['username'],

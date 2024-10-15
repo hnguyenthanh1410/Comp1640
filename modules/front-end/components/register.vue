@@ -23,7 +23,7 @@
 
 						<v-select
 							v-model="form.faculty"
-							label="Your Major"
+							label="Major"
 							disable-lookup
 							outlined
 							:items="faculty"

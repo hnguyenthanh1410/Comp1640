@@ -15,12 +15,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwtGate') {
     });
   }
 
-  public validate(payload) {
+  validate(payload) {
     if (!payload) throw new UnauthorizedException('Unauthorized');
 
-    return {
-      sub: payload.sub,
-      username: payload.username,
-    };
+    return payload;
   }
 }

@@ -1,87 +1,122 @@
 <template>
 	<v-layout class="pa-0 justify-center align-center h-100">
 		<index-card
-			width="30vw"
-			height="55vh"
-			index-card="index-card"
+			width="35vw"
+			height="40vh"
 		>
-			<div
-				class="black--text text-h5 font-weight-regular mt-3"
-				style="text-align: center;"
-			>
-				Please choose your method of login
+			<div class="black--text text-h4 mt-4 mb-3 font-weight-bold">
+				Sign In
 			</div>
 
-			<v-img
-				src="/img/logo.png"
-				width="100%"
-				contain
-				max-height="50%"
-				class="mb-3"
-			/>
-
-			<v-btn
-				v-for="(header, key) of headers"
-				:key="key"
-				:ripple="false"
-				:to="header.link"
-				plain
-				text
-				color="#ffffff"
-				width="60%"
-				class="black my-2 rounded-lg text-capitalize"
-				@click="header.actions"
+			<v-form
+				v-model="valid"
+				class="d-flex flex-column align-center w-100"
+				@submit.prevent="submit"
 			>
-				{{ header.text }}
-			</v-btn>
+				<v-card
+					class="d-flex pl-5"
+					color="transparent"
+					height="25vh"
+					flat
+				>
+					<v-layout column>
+						<v-text-field
+							v-for="(header, key) of headers"
+							:key="key"
+							v-model="form[header.value]"
+							:type="header.type || 'text'"
+							:label="header.label"
+							:rules="header.rules"
+							
+							outlined
+						/>
+					</v-layout>
+
+					<v-img
+						src="/img/logo.png"
+						width="45%"
+						contain
+						max-height="75%"
+					/>
+				</v-card>
+				
+				<v-layout flex-column justify-center align-center>
+					<v-btn
+						v-for="(btn, key) of btns"
+						:key="key"
+						:type="btn.type"
+						:ripple="false"
+						:to="btn.link"
+						:disabled="btn.type === 'submit' && !valid"
+						plain
+						text
+						:color="btn.type === 'submit' ? '#ffffff' : 'black'"
+						class="mx-2 rounded-lg"
+						:class="{
+							'black': btn.type === 'submit'
+						}"
+					>
+						{{ btn.text }}
+					</v-btn>
+				</v-layout>
+			</v-form>
 		</index-card>
 	</v-layout>
 </template>
 
 <script>
-import { mapFields } from 'vuex-map-fields';
-
 export default {
-	name: 'IndexPage',
+	name: 'LoginPage',
 	auth: 'guest',
-	middleware ({ store, redirect, $checkRole }) {
-		if (store.state.user.guestState || $checkRole.isRole(['MARKETING_MANAGER', 'ADMIN'])) redirect('/faculty/' + store.state.faculty.faculties[0]?.slug);
-		if ($checkRole.isRole(['MARKETING_COORDINATOR', 'STUDENT'])) redirect('/faculty/' + store.state.auth.user.faculty?.slug);
-	},
 	data () {
 		return {
+			btns: [
+				{
+					type: "submit",
+					text: "Login"
+				},
+				{
+					type: "button",
+					text: "Forgot Password",
+					link: "/forgot-password"
+				}
+			],
 			headers: [
 				{
-					text: "Sign in with username",
-					link: "/login"
+					label: "Username",
+					value: 'username',
+					rules: [
+						this.required
+					]
 				},
 				{
-					text: "Guest",
-					actions: this.toggleState
-				},
-				{
-					text: "Register",
-					link: "/register"
+					label: "Password",
+					value: 'password',
+					type: 'password',
+					rules: [
+						this.required,
+						(text) => text.length >= 4 ? !!text : "The password must be at least 4 character long."
+					]
 				}
-			]
+			],
+			valid: false,
+			form: {
+				username: '',
+				password: ''
+			}
 		};
 	},
-	computed: {
-		...mapFields('user', ['guestState']),
-		...mapFields('faculty', ['faculties'])
-	},
 	methods: {
-		toggleState () {
-			this.$store.dispatch('user/updateGuestState', !this.guestState);
-
-			this.$router.push('/faculty/' + this.faculties[0].slug);
+		required (text) {
+			return !!text || "This field is required.";
+		},
+		async submit () {
+			try {
+				await this.$auth.login({ data: this.form });
+			} catch (err) {
+				console.log(err);
+			}
 		}
 	}
 };
 </script>
-
-<style scoped>
-.index-card > * {
-	flex: 0 auto;
-}
-</style>
