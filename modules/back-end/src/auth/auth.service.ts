@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import {
   CreateUserRequest,
@@ -18,6 +18,7 @@ import {
 import { Faculty } from 'src/faculty/entity/faculty.entity';
 import { Role, RoleName } from 'src/role/entity/role.entity';
 import { SignInRequest } from 'src/user/dtos/signIn.dto';
+import { stringify } from 'querystring';
 
 let codeVerify: number;
 @Injectable()
@@ -65,11 +66,13 @@ export class AuthService {
   }
 
   public async validateUser(username: string, password: string): Promise<User> {
-    const userInfo = this.userRepository.findOne({
-      where: [{ username }, { password }],
+    const userInfo = await this.userRepository.findOne({
+      where: [{ username }],
     });
 
-    return userInfo;
+	if (!userInfo) return;
+
+    if (await bcrypt.compare(password, userInfo.password)) return userInfo;
   }
 
   public async hashData(password: string): Promise<string> {
@@ -86,6 +89,7 @@ export class AuthService {
       createUserRequest.username,
       createUserRequest.password,
     );
+	
 
     if (existedUser)
       throw new BadRequestException('Username or Email is existed !');
@@ -119,7 +123,7 @@ export class AuthService {
       user.role = studentRole;
     } else {
       const role = await this.roleRepository.findOne({
-        where: { name: createUserRequest.role },
+        where: { name: parseInt(RoleName[createUserRequest.role]) },
       });
 
       user.role = role;

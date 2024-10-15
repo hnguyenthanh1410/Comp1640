@@ -27,7 +27,7 @@ export default async ({ $auth, $checkRole, redirect }) => {
 	if ($auth.strategy.token.status().expired() && $auth.strategy.refreshToken.status().valid()) {
 		await $auth.refreshTokens()
 		
-	} else if ($auth.strategy.refreshToken.status().expired()) $auth.reset();
+	} else if ($auth.strategy.refreshToken.status().expired() || !$auth.strategy.refreshToken.get()) $auth.reset();
 
 	$auth.onRedirect(() => {
 		if (!$auth.loggedIn) {

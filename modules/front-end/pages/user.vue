@@ -131,7 +131,7 @@ export default {
 		},
 		async createUser (user) {
 			try {
-				await this.$getData.fetch("http://localhost:8080/auth/create-user",{ data: user }, 'post');
+				await this.$getData.fetch("http://localhost:8080/auth/create-user", { ...user }, 'post');
 
 				await this.fetchUser()
 			} catch (err) {

@@ -40,11 +40,6 @@ export class AuthController {
   }
 
   @Post('create-user')
-  async create(@Body() createUserRequest: CreateUserRequest) {
-    return await this.authService.createNewUser(createUserRequest);
-  }
-
-  @Post('create-user-with-role')
   @UseGuards(AuthGuard('jwtGate'), RoleGuard)
   @CheckRole(RoleName.ADMIN)
   async createUser(@Body() CreateUserRequest: CreateUserRequest) {

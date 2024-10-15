@@ -210,8 +210,8 @@ export default {
 			const form = {...this.form};
 
 			if (type === 'submit') this.$emit('submit', form);
-			this.$refs.form.reset();
-			this.dialog = false;
+			// this.$refs.form.reset();
+			// this.dialog = false;
 		}
 	}
 }
