@@ -3,7 +3,9 @@
 		<v-row>
 			<v-col class="d-flex align-center" cols="4">
 				<v-col cols="6">
-					<div class="text-subtitle-2 text-lg-h6 font-weight-regular">Date from</div>
+					<div class="text-subtitle-2 text-lg-h6 font-weight-regular">
+						Date from
+					</div>
 				</v-col>
 
 				<v-menu
@@ -48,7 +50,9 @@
 
 			<v-col cols="4" class="d-flex align-center">
 				<v-col cols="6">
-					<div class="text-subtitle-2 text-lg-h6 font-weight-regular">Date to</div>
+					<div class="text-subtitle-2 text-lg-h6 font-weight-regular">
+						Date to
+					</div>
 				</v-col>
 
 				<v-menu
@@ -89,7 +93,7 @@
 				</v-menu>
 			</v-col>
 
-			<v-col cols="1"/>
+			<v-col cols="1" />
 
 			<v-col class="d-flex align-center">
 				<v-btn
@@ -132,14 +136,14 @@ export default {
 		dates: {
 			deep: true,
 			handler () {
-				this.$emit('input', this.dates)
+				this.$emit('input', this.dates);
 			}
-		} 
+		}
 	},
 	mounted () {
 		if (!this.value) return;
 
-		this.dates =  this.value;
+		this.dates = this.value;
 	}
 };
 </script>

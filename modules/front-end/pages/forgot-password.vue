@@ -6,7 +6,7 @@
 
 		<v-card-text class="mx-auto w-50 h-75 d-flex align-center">
 			<v-form v-model="valid" class="w-100" @submit.prevent>
-				<v-text-field v-model="email" :rules="rules" placeholder="Your email"/>
+				<v-text-field v-model="email" :rules="rules" placeholder="Your email" />
 			</v-form>
 		</v-card-text>
 
@@ -35,32 +35,32 @@
 </template>
 
 <script>
-	export default {
-		name: 'ForgotPasswordIndexPage',
-		auth: 'guest',
-		data () {
-			return {
-				valid: false,
-				rules: [
-					this.required,
-					(text) => !!text?.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) || "Invaild email format."
-				],
-				email: ''
-			}
+export default {
+	name: 'ForgotPasswordIndexPage',
+	auth: 'guest',
+	data () {
+		return {
+			valid: false,
+			rules: [
+				this.required,
+				(text) => !!text?.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) || "Invaild email format."
+			],
+			email: ''
+		};
+	},
+	methods: {
+		required (text) {
+			return !!text || 'This field is required';
 		},
-		methods: {
-			required (text) {
-				return !!text || 'This field is required'
-			},
-			async forget() {
-				try {
-					await this.$getData.fetch('http://localhost:8080/auth/send-code', { email: this.email }, 'post');
+		async forget () {
+			try {
+				await this.$getData.fetch('http://localhost:8080/auth/send-code', { email: this.email }, 'post');
 
-					this.$router.push('/verify-code')
-				} catch (error) {
-					console.log(error);
-				}
+				this.$router.push('/verify-code');
+			} catch (error) {
+				console.log(error);
 			}
 		}
 	}
+};
 </script>

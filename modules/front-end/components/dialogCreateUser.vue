@@ -3,8 +3,8 @@
 		<template #activator="{ on, attrs}">
 			<v-layout justify-end class="w-100">
 				<v-btn
+					v-bind="attrs"
 					v-on="on"
-					v-bind="attrs"	
 				>
 					Create User
 				</v-btn>
@@ -21,8 +21,8 @@
 
 			<v-card-text class="d-flex h-75 w-100">
 				<v-form
-					v-model="valid"
 					ref="form"
+					v-model="valid"
 					class="d-flex w-100"
 				>
 					<v-row class="h-100">
@@ -199,7 +199,7 @@ export default {
 					value: 'role',
 					items: this.roles
 				}
-			]
+			];
 		}
 	},
 	methods: {
@@ -207,12 +207,12 @@ export default {
 			return !!text || "This field is required.";
 		},
 		btnClick (type) {
-			const form = {...this.form};
+			const form = { ...this.form };
 
 			if (type === 'submit') this.$emit('submit', form);
 			// this.$refs.form.reset();
 			// this.dialog = false;
 		}
 	}
-}
+};
 </script>

@@ -6,7 +6,7 @@
 
 		<v-card-text class="h-75 d-flex align-center">
 			<v-form v-model="valid" @submit.prevent>
-				<v-otp-input type="number" v-model="code" :rules="required"></v-otp-input>
+				<v-otp-input v-model="code" type="number" :rules="required" />
 			</v-form>
 		</v-card-text>
 
@@ -44,7 +44,7 @@ export default {
 		return {
 			valid: false,
 			code: undefined
-		}
+		};
 	},
 	methods: {
 		required (text) {
@@ -54,12 +54,11 @@ export default {
 			try {
 				await this.$getData.fetch('http://localhost:8080/auth/check-code', { code: toInteger(this.code) }, 'post');
 
-				this.$router.push('/reset-password')
-			} catch {
+				this.$router.push('/reset-password');
+			} catch (error) {
 				console.log(error);
-				
 			}
 		}
 	}
-}
+};
 </script>

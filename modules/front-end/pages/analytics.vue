@@ -1,13 +1,15 @@
 <template>
 	<index-card index-class="ma-auto align-self-center pa-5" width="90vw">
 		<v-card-title class="w-100 d-flex flex-column">
-			<div class="text-h5 text-lg-h3">Analytics Page</div>
-			<date-picker v-model="dates" :currentDate="currentDate" @submit="$fetch"/>
+			<div class="text-h5 text-lg-h3">
+				Analytics Page
+			</div>
+			<date-picker v-model="dates" :current-date="currentDate" @submit="$fetch" />
 		</v-card-title>
 
 		<div class="w-100 h-100">
 			<v-row class="align-center d-flex">
-				<v-col cols="6" ref="left">
+				<v-col ref="left" cols="6">
 					<v-card class="rounded-lg" width="100%">
 						<v-data-table
 							:headers="tableHeaders"
@@ -21,7 +23,7 @@
 					</v-card>
 				</v-col>
 
-				<v-col cols="6" class="h-100" ref="right">
+				<v-col ref="right" cols="6" class="h-100">
 					<v-row>
 						<v-card width="100%" class="rounded-lg py-3 mb-1">
 							<canvas id="pieChart" />
@@ -44,7 +46,7 @@
 
 					<v-tabs-items v-model="activeTab">
 						<v-tab-item v-for="(header, index) of rowHeaders" :key="index" :eager="true" class="h-100">
-							<canvas :id="header.id"/>
+							<canvas :id="header.id" />
 						</v-tab-item>
 					</v-tabs-items>
 				</v-tabs>
@@ -121,9 +123,9 @@ export default {
 			charts: []
 		};
 	},
-	async fetch () {		
+	async fetch () {
 		if (!this.mounted) {
-			const currentDate =  [
+			const currentDate = [
 				new Date().getFullYear(),
 				(new Date().getMonth() + 1).toString().padStart(2, "0"),
 				new Date().getDate().toString().padStart(2, "0")
@@ -137,14 +139,14 @@ export default {
 		}
 
 		this.contribution = await this.$getData.fetch('http://localhost:8080/contribution/count', this.dates, 'post') || 0;
-		this.totalArtical = this.contribution.total.artical
+		this.totalArtical = this.contribution.total.artical;
 		this.totalContribution = this.contribution.total.length;
 		this.students = await this.$getData.fetch('http://localhost:8080/contribution/count-contribution-per-user', this.dates, 'post');
 	},
 	computed: {
 		...mapFields('faculty', ['faculties']),
-		currentDate() {
-			const currentDate =  [
+		currentDate () {
+			const currentDate = [
 				new Date().getFullYear(),
 				(new Date().getMonth() + 1).toString().padStart(2, "0"),
 				new Date().getDate().toString().padStart(2, "0")
@@ -189,10 +191,10 @@ export default {
 		// eslint-disable-next-line no-new
 		this.charts.push(new Chart(ctx, pieChartData));
 
-		const labels = []
+		const labels = [];
 
 		this.totalArtical.forEach((date) => {
-			const key = Object.keys(date)[0]
+			const key = Object.keys(date)[0];
 			if (
 				!labels.length ||
 				labels.find((d) => d !== key)
@@ -215,7 +217,7 @@ export default {
 		const lineChartConfig = {
 			type: 'line',
 			data: {
-				labels: labels,
+				labels,
 				datasets: [
 					{
 						label: 'Total Contribution',
@@ -254,7 +256,7 @@ export default {
 					}
 				}
 			}
-		}
+		};
 		const chart = document.getElementById("totalChart");
 
 		this.charts.push(new Chart(chart, lineChartConfig));
@@ -277,8 +279,8 @@ export default {
 					plugins: {
 						title: {
 							display: true,
-							text: "Number of posted contribution in " + this.faculties.find((faculty) => faculty.slug === header.faculty)?.name,
-        	  			},
+							text: "Number of posted contribution in " + this.faculties.find((faculty) => faculty.slug === header.faculty)?.name
+						}
 					},
 					maintainAspectRatio: false
 				}
@@ -291,13 +293,13 @@ export default {
 	methods: {
 		returnData (data) {
 			return data.map((header) => {
-				const key = Object.keys(header)[0]
+				const key = Object.keys(header)[0];
 				
 				return {
 					x: key,
 					y: header[key]
 				};
-			})
+			});
 		},
 		loadChart () {
 			const faculty = this.rowHeaders[this.activeTab].faculty;
@@ -331,7 +333,7 @@ export default {
 			// eslint-disable-next-line no-new
 			new Chart(pie, data);
 		},
-		updateChart() {
+		updateChart () {
 			console.log(this.charts);
 			
 			this.charts.forEach((chart) => {
@@ -339,8 +341,8 @@ export default {
 				chart.data.datasets.forEach((dataset) => {
 					dataset.data = [];
 				});
-   				chart.update();
-			})
+				chart.update();
+			});
 		}
 	}
 };

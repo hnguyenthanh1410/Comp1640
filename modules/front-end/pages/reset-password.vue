@@ -6,8 +6,8 @@
 
 		<v-card-text class="mx-auto w-50 h-75 d-flex align-center">
 			<v-form v-model="valid" class="w-100" @submit.prevent>
-				<v-text-field v-model="password" type="password" :rules="rules" placeholder="Enter your password"/>
-				<v-text-field v-model="rePassword" type="password" :rules="rules" placeholder="Re-enter your password"/>
+				<v-text-field v-model="password" type="password" :rules="rules" placeholder="Enter your password" />
+				<v-text-field v-model="rePassword" type="password" :rules="rules" placeholder="Re-enter your password" />
 			</v-form>
 		</v-card-text>
 
@@ -36,33 +36,33 @@
 </template>
 
 <script>
-	export default {
-		name: 'ForgotPasswordIndexPage',
-		auth: 'guest',
-		data () {
-			return {
-				valid: false,
-				rules: [
-					this.required,
-					(text) => !!text?.length || 'Password need to be at least 4 digit long.'
-				],
-				password: undefined,
-				rePassword: undefined
-			}
+export default {
+	name: 'ForgotPasswordIndexPage',
+	auth: 'guest',
+	data () {
+		return {
+			valid: false,
+			rules: [
+				this.required,
+				(text) => !!text?.length || 'Password need to be at least 4 digit long.'
+			],
+			password: undefined,
+			rePassword: undefined
+		};
+	},
+	methods: {
+		required (text) {
+			return !!text || 'This field is required';
 		},
-		methods: {
-			required (text) {
-				return !!text || 'This field is required'
-			},
-			async forget() {
-				try {
-					await this.$getData.fetch('http://localhost:8080/auth/reset-password', { password: this.password, rePassword: this.rePassword }, 'post');
+		async forget () {
+			try {
+				await this.$getData.fetch('http://localhost:8080/auth/reset-password', { password: this.password, rePassword: this.rePassword }, 'post');
 
-					this.$router.push('/')
-				} catch (error) {
-					console.log(error);
-				}
+				this.$router.push('/');
+			} catch (error) {
+				console.log(error);
 			}
 		}
 	}
+};
 </script>

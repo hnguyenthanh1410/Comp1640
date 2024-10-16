@@ -8,7 +8,7 @@
 			<v-card-title style="text-align: center;" class="text-h3 font-weight-regular d-flex flex-column w-100 justify-center">
 				User
 
-				<dialog-create-user @submit="createUser"/>
+				<dialog-create-user @submit="createUser" />
 			</v-card-title>
 
 			<v-card-text class="pa-3">
@@ -133,7 +133,7 @@ export default {
 			try {
 				await this.$getData.fetch("http://localhost:8080/auth/create-user", { ...user }, 'post');
 
-				await this.fetchUser()
+				await this.fetchUser();
 			} catch (err) {
 				console.log(err);
 			}

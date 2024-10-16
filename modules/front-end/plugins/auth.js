@@ -10,13 +10,13 @@ export default async ({ $auth, $checkRole, redirect }) => {
 			const response = await axios.post('http://localhost:8080/auth/refresh-token', {
 			}, {
 				headers: {
-					'Authorization': refreshToken
+					Authorization: refreshToken
 				}
 			});
 			const { refreshToken: newRefreshToken, accessToken: newAccessToken } = response.data;
 	
-			$auth.strategy.token.set( newAccessToken);
-			$auth.strategy.refreshToken.set( newRefreshToken);
+			$auth.strategy.token.set(newAccessToken);
+			$auth.strategy.refreshToken.set(newRefreshToken);
 			return newAccessToken;
 		} catch {
 			$auth.reset();
@@ -25,8 +25,7 @@ export default async ({ $auth, $checkRole, redirect }) => {
 	};
 
 	if ($auth.strategy.token.status().expired() && $auth.strategy.refreshToken.status().valid()) {
-		await $auth.refreshTokens()
-		
+		await $auth.refreshTokens();
 	} else if ($auth.strategy.refreshToken.status().expired() || !$auth.strategy.refreshToken.get()) $auth.reset();
 
 	$auth.onRedirect(() => {
