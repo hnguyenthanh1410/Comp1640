@@ -1,10 +1,10 @@
 <template>
 	<index-card
 		width="35vw"
-		height="40vh"
+		height="40%"
 		index-class="ma-auto align-self-center"
 	>
-		<v-card-title class="black--text text-h4 mt-4 mb-3 font-weight-bold">
+		<v-card-title class="black--text text-h4 font-weight-bold">
 			Sign In
 		</v-card-title>
 
@@ -15,8 +15,8 @@
 				@submit.prevent
 			>
 				<v-row class="d-flex flex-shrink-1 w-100">
-					<v-col cols="6">
-						<v-layout column>
+					<v-col cols="6" class="d-flex align-center">
+						<v-layout column class="h-100" justify-center>
 							<v-text-field
 								v-for="(header, key) of headers"
 								:key="key"
@@ -25,6 +25,8 @@
 								:label="header.label"
 								:rules="header.rules"
 								outlined
+								dense
+								hide-details="auto"
 							/>
 						</v-layout>
 					</v-col>
