@@ -11,27 +11,12 @@
 			Home
 		</v-btn>
 
-		<faculty-nav v-if="$auth.loggedIn || guestState" />
+		<faculty-nav v-if="$auth.loggedIn" />
 		
 		<v-spacer />
 
-		<div v-if="!$auth.loggedIn && !guestState">
-			<v-btn
-				v-for="(header, key) of headers"
-				:key="key"
-				color="black"
-				:ripple="false"
-				:to="header.link"
-				text
-				class="transparent text-capitalize text-h6 font-weight-regular"
-				plain
-			>
-				{{ header.text }}
-			</v-btn>
-		</div>
-
 		<v-btn
-			v-else
+			v-if="$auth.loggedIn"
 			color="black"
 			:ripple="false"
 			text
@@ -49,20 +34,6 @@ import { mapFields } from 'vuex-map-fields';
 
 export default {
 	name: "NavBtn",
-	data () {
-		return {
-			headers: [
-				{
-					text: "Login",
-					link: "/login"
-				},
-				{
-					text: "Register",
-					link: "/register"
-				}
-			]
-		};
-	},
 	computed: {
 		...mapFields('user', ['guestState'])
 	},
