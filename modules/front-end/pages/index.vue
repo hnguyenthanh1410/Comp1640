@@ -1,7 +1,7 @@
 <template>
 	<index-card
 		width="35vw"
-		:height="!valid && (form.username || form.password) ? '50%' : '40%'"
+		:height="!valid && (form.username || form.password) ? '60%' : '40%'"
 		index-class="ma-auto align-self-center"
 	>
 		<v-card-title class="black--text text-h4 font-weight-bold">
