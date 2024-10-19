@@ -56,7 +56,7 @@
 					:class="{
 						'black': btn.type === 'submit'
 					}"
-					@click="btn.type === 'submit' && submit"
+					@click="btn.type === 'submit' && submit()"
 				>
 					{{ btn.text }}
 				</v-btn>
@@ -114,7 +114,10 @@ export default {
 			try {
 				await this.$auth.login({ data: this.form });
 			} catch (err) {
-				console.log(err);
+				this.$store.dispatch('snackbar/push', {
+					type: 'error',
+					message: err.message
+				})
 			}
 		}
 	}

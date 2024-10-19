@@ -29,7 +29,7 @@
 				class="black mx-2 rounded-lg"
 				@click="forget"
 			>
-				Forgot Password
+				Change Password
 			</v-btn>
 		</v-card-actions>
 	</index-card>

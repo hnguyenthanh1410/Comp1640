@@ -132,10 +132,19 @@ export default {
 		async createUser (user) {
 			try {
 				await this.$getData.fetch("http://localhost:8080/auth/create-user", { ...user }, 'post');
+				this.$store.dispatch('snackbar/push', {
+					type: 'complete',
+					message: 'Create user sucessfully'
+				})
 
 				await this.fetchUser();
 			} catch (err) {
 				console.log(err);
+
+				this.$store.dispatch('snackbar/push', {
+					type: 'error',
+					message: err.message
+				})
 			}
 		}
 	}

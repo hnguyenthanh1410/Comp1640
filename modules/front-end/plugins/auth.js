@@ -31,7 +31,7 @@ export default async ({ $auth, $checkRole, redirect }) => {
 	$auth.onRedirect(() => {
 		if (!$auth.loggedIn) {
 			return '/';
-		} else if ($auth.user.faculty?.slug) {
+		} else if ($checkRole.isRole(['GUEST', 'STUDENT', 'MARKETING_COORDINATOR'])) {
 			return `/faculty/${$auth.user.faculty?.slug}`;
 		} else if ($checkRole.isRole(['ADMIN'])) {
 			return '/analytics';

@@ -104,15 +104,27 @@ export default {
 			this.posts = await this.$getData.fetch('http://localhost:8080/contribution/approved-contribution-list/');
 		},
 		async deleteContribution (contribution) {
-			await this.$getData.fetch(
-				'http://localhost:8080/contribution/delete',
-				{
-					id: contribution.id
-				},
-				'delete'
-			);
+			try {
+				await this.$getData.fetch(
+					'http://localhost:8080/contribution/delete',
+					{
+						id: contribution.id
+					},
+					'delete'
+				);
 
-			await this.fetchPost();
+				await this.fetchPost();
+
+				this.$store.dispatch('snackbar/push', {
+					type: 'complete',
+					message: 'Delete contribution sucessfully'
+				})
+			} catch (err) {
+				this.$store.dispatch('snackbar/push', {
+					type: 'error',
+					message: err.message
+				})
+			}
 		}
 	}
 };

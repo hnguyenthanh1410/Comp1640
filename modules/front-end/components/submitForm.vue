@@ -211,7 +211,10 @@ export default {
 
 				this.$router.back();
 			} catch (err) {
-
+				this.$store.dispatch('snackbar/push', {
+					type: 'error',
+					message: err.message
+				})
 			}
 		},
 
@@ -280,8 +283,18 @@ export default {
 				}
 
 				await this.$store.dispatch('post/getData');
+
+				this.$store.dispatch('snackbar/push', {
+					type: 'complete',
+					message: 'Update sucessfully'
+				})
 			} catch (err) {
 				console.log(err);
+
+				this.$store.dispatch('snackbar/push', {
+					type: 'error',
+					message: err.message
+				})
 			} finally {
 				this.counter += 1;
 				await this.fetchData();

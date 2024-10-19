@@ -61,7 +61,7 @@ export default {
 	computed: {
 		...mapFields('faculty', ['faculties']),
 		headers () {
-			return this.$checkRole.isRole(['STUDENT', 'MARKETING_COORDINATOR'])
+			return this.$checkRole.isRole(['STUDENT', 'MARKETING_COORDINATOR', 'GUEST'])
 				? this.faculties.filter((faculty) => faculty.name === this.$auth.user.faculty.name)
 				: this.faculties;
 		}
