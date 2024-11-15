@@ -19,6 +19,7 @@
 			</v-main>
 
 			<!-- <v-footer app color="#2b3494" style="height: 30vh;" /> -->
+			 <snack-bar/>
 		</v-img>
 	</v-app>
 </template>
